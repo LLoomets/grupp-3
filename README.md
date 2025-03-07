@@ -23,6 +23,7 @@ ning liigu rakenduse kausta <br />
 Brauseris peaks avanema http://localhost:8100/
 
 ### Android käivitamine
+#### Emulaatoris
 1. Liigu rakenduse kausta (kui seal juba ei ole) <br />
 `cd myApp`
 2. Ehita rakendus <br />
@@ -35,6 +36,17 @@ Brauseris peaks avanema http://localhost:8100/
 `ionic cap open android`
 6. Vajadusel lisa seade - View -> Tool Windows -> Manage Devices -> Add new device
 7. Käivita rakendus Android Studios
+
+#### Füüsilises mobiilis
+1. Ava Seaded > Teave telefoni kohta
+2. Vajuta Build Number peale 7 korda (aktiveerib arendaja valikud)
+3. Ava Seaded > Arendaja valikud
+4. Lülita sisse USB silumine (USB debugging)
+5. Ühenda mobiil arvutiga kasutades USB kaablit
+6. Ava Android Studio:
+`ionic cap open android`
+7. Ühendatud mobiil peaks ilmuma Android Studios devices alla
+8. Käivita rakendus
 
 ### IOS käivitamine
 1. Liigu rakenduse kausta (kui seal juba ei ole) <br />
