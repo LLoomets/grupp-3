@@ -53,11 +53,11 @@ Brauseris peaks avanema http://localhost:8100/
 `cd myApp`
 2. Ehita rakendus <br />
 `ionic build`
-3. Lisa Android platvorm <br />
+3. Lisa IOS platvorm <br />
 `ionic cap add ios`
 4. Sünkroniseeri <br />
 ` ionic cap sync`
-5. Ava Android Studio <br />
+5. Ava Xcode <br />
 `ionic cap open ios`
 7. Käivita rakendus
 
