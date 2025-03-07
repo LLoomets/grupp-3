@@ -38,9 +38,9 @@ Brauseris peaks avanema http://localhost:8100/
 7. Käivita rakendus Android Studios
 
 #### Füüsilises mobiilis
-1. Ava Seaded > Teave telefoni kohta
+1. Ava Seaded -> Teave telefoni kohta
 2. Vajuta Build Number peale 7 korda (aktiveerib arendaja valikud)
-3. Ava Seaded > Arendaja valikud
+3. Ava Seaded -> Arendaja valikud
 4. Lülita sisse USB silumine (USB debugging)
 5. Ühenda mobiil arvutiga kasutades USB kaablit
 6. Ava Android Studio:
