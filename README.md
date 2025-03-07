@@ -16,7 +16,7 @@ ning liigu rakenduse kausta <br />
    `npm install`
 
 ### Brauseris käivitamine
-1. Liigu rakenduse kausta (kui seal juba ei ole) <br />
+1. Liigu rakenduse kausta (kui seal juba ei ole) kasutades käsurida <br />
 `cd myApp`
 2. Käivita rakendus <br />
 `ionic serve` <br />
@@ -24,7 +24,7 @@ Brauseris peaks avanema http://localhost:8100/
 
 ### Android käivitamine
 #### Emulaatoris
-1. Liigu rakenduse kausta (kui seal juba ei ole) <br />
+1. Liigu rakenduse kausta (kui seal juba ei ole) kasutades käsurida <br />
 `cd myApp`
 2. Ehita rakendus <br />
 `ionic build`
@@ -49,7 +49,7 @@ Brauseris peaks avanema http://localhost:8100/
 8. Käivita rakendus
 
 ### IOS käivitamine
-1. Liigu rakenduse kausta (kui seal juba ei ole) <br />
+1. Liigu rakenduse kausta (kui seal juba ei ole) kasutades käsurida <br />
 `cd myApp`
 2. Ehita rakendus <br />
 `ionic build`
