@@ -12,7 +12,6 @@
 `git clone https://github.com/LLoomets/grupp-3.git` <br />
 ning liigu rakenduse kausta <br />
 `cd myApp`
-
 2. Installi dependency'd <br />
    `npm install`
 
@@ -23,7 +22,7 @@ ning liigu rakenduse kausta <br />
 `ionic serve` <br />
 Brauseris peaks avanema http://localhost:8100/
 
-### Androidis käivitamine
+### Android käivitamine
 1. Liigu rakenduse kausta (kui seal juba ei ole) <br />
 `cd myApp`
 2. Ehita rakendus <br />
@@ -37,6 +36,18 @@ Brauseris peaks avanema http://localhost:8100/
 6. Vajadusel lisa seade - View -> Tool Windows -> Manage Devices -> Add new device
 7. Käivita rakendus Android Studios
 
+### IOS käivitamine
+1. Liigu rakenduse kausta (kui seal juba ei ole) <br />
+`cd myApp`
+2. Ehita rakendus <br />
+`ionic build`
+3. Lisa Android platvorm <br />
+`ionic cap add ios`
+4. Sünkroniseeri <br />
+` ionic cap sync`
+5. Ava Android Studio <br />
+`ionic cap open ios`
+7. Käivita rakendus
 
 
 
