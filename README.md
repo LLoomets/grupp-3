@@ -48,7 +48,7 @@ Brauseris peaks avanema http://localhost:8100/
 7. Ühendatud mobiil peaks ilmuma Android Studios devices alla
 8. Käivita rakendus
 
-###IOS käivitamine füüsilises mobiilis:
+### IOS käivitamine füüsilises mobiilis:
 1. Luba arendajarežiim iPhone’is: Ava Seaded → Privaatsus & turvalisus - Lülita sisse Arendajarežiim (Developer Mode) - Taaskäivita iPhone ja kinnita valik
 2. Ühenda iPhone Maciga USB-kaabli abil: Kui ilmub teade "Usalda seda arvutit" (Trust This Computer), vajuta "Usalda" (Trust)
 3. Seo iPhone Xcode’iga: Ava Xcode käsuga npx cap open ios - Mine Xcode → Settings → Devices & Simulators - Leia oma iPhone "Devices" vahekaardilt - Kui see on märgitud kui (Unpaired), vajuta "Pair" - Kinnita sidumistaotlus iPhone’is
