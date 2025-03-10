@@ -37,7 +37,7 @@ Brauseris peaks avanema http://localhost:8100/
 6. Vajadusel lisa seade - View -> Tool Windows -> Manage Devices -> Add new device
 7. Käivita rakendus Android Studios
 
-#### Füüsilises mobiilis
+#### Füüsilises Android mobiilis
 1. Ava Seaded -> Teave telefoni kohta
 2. Vajuta Build Number peale 7 korda (aktiveerib arendaja valikud)
 3. Ava Seaded -> Arendaja valikud
@@ -47,6 +47,14 @@ Brauseris peaks avanema http://localhost:8100/
 `ionic cap open android`
 7. Ühendatud mobiil peaks ilmuma Android Studios devices alla
 8. Käivita rakendus
+
+#### IOS käivitamine füüsilises mobiilis:
+1. Luba arendajarežiim iPhone’is: Ava Seaded → Privaatsus & turvalisus - Lülita sisse Arendajarežiim (Developer Mode) - Taaskäivita iPhone ja kinnita valik
+2. Ühenda iPhone Maciga USB-kaabli abil: Kui ilmub teade "Usalda seda arvutit" (Trust This Computer), vajuta "Usalda" (Trust)
+3. Seo iPhone Xcode’iga: Ava Xcode käsuga npx cap open ios - Mine Xcode → Settings → Devices & Simulators - Leia oma iPhone "Devices" vahekaardilt - Kui see on märgitud kui (Unpaired), vajuta "Pair" - Kinnita sidumistaotlus iPhone’is
+4. Käivita rakendus iPhone’il: Ava oma projekt Xcode’is käsuga npx cap open ios - Vali seadmete nimekirjast oma iPhone - Vajuta Käivita ▶, et rakendus telefonis käivitada
+5. Anna  iPhone'is luba arendajaäpile (developer app): Ava Seaded → Üldine → VPN ja seadmehaldus – vajuta loodud äpile ja anna sellele luba.
+
 
 ### IOS käivitamine
 1. Liigu rakenduse kausta (kui seal juba ei ole) kasutades käsurida <br />
@@ -59,7 +67,10 @@ Brauseris peaks avanema http://localhost:8100/
 ` ionic cap sync`
 5. Ava Xcode <br />
 `ionic cap open ios`
-7. Käivita rakendus
+6. Vali emulaator Xcode’is: <br />
+   Xcode’i aknas vali ülemiselt ribalt "Any iOS Device (arm64)" ja muuda see soovitud simulaatori vastu (nt "iPhone 16 Pro").
+7. Käivita rakendus <br />
+  Vajuta Xcode’is Käivita ▶ nuppu
 
 
 
