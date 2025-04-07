@@ -2,18 +2,15 @@
   <ion-page>
     <ion-header>
       <ion-toolbar>
-            <ion-title>Lisa</ion-title>
+        <ion-title>Bucket list</ion-title>
       </ion-toolbar>
     </ion-header>
-    
+
     <ion-content class="ion-padding">
       <ion-list>
         
       </ion-list>
 
-      <ion-list>
-        
-      </ion-list>
     </ion-content>
   </ion-page>
 </template>
