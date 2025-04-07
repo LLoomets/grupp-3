@@ -3,6 +3,9 @@
     <ion-header>
       <ion-toolbar>
         <ion-title>Avaleht</ion-title>
+        <ion-buttons slot="end">
+          <ion-menu-button />
+        </ion-buttons>
       </ion-toolbar>
     </ion-header>
     <ion-content class="ion-padding">
@@ -13,5 +16,5 @@
 </template>
 
 <script setup lang="ts">
-import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent } from '@ionic/vue';
+import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonButtons, IonMenuButton } from '@ionic/vue';
 </script>
