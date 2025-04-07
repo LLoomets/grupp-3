@@ -2,7 +2,12 @@
   <ion-page>
     <ion-header>
       <ion-toolbar>
-        <ion-title>Avaleht</ion-title>
+        <ion-title>
+          <div style="display: flex; align-items: center;">
+            <img src="/logo.png" alt="Logo" style="height: 50px; margin-right: 10px;" />
+            <span>KlubiKompass</span>
+          </div>
+        </ion-title>
       </ion-toolbar>
     </ion-header>
     <ion-content class="ion-padding">
