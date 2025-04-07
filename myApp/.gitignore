@@ -30,3 +30,5 @@ npm-debug.log*
 /platforms
 /plugins
 /www
+
+myApp/ios/App/App.xcodeproj/project.pbxproj
