@@ -2,22 +2,31 @@
   <ion-page>
     <ion-header>
       <ion-toolbar>
-        <ion-title>Hello World 2</ion-title>
+        <ion-title>Baarid ja Klubid</ion-title>
       </ion-toolbar>
     </ion-header>
-    <ion-content :fullscreen="true">
-      <ion-header collapse="condense">
-        <ion-toolbar>
-          <ion-title size="large">Hello world 2</ion-title>
-        </ion-toolbar>
-      </ion-header>
-
-      <ExploreContainer name="Tab 2 page - suvaline" />
+    <ion-content class="ion-padding">
+      <ion-list>
+        <ion-item v-for="(place, index) in places" :key="index">
+          <ion-label>
+            <h2>{{ place.name }}</h2>
+            <p>{{ place.type }}</p>
+          </ion-label>
+        </ion-item>
+      </ion-list>
     </ion-content>
   </ion-page>
 </template>
 
 <script setup lang="ts">
-import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent } from '@ionic/vue';
-import ExploreContainer from '@/components/ExploreContainer.vue';
+import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonList, IonItem, IonLabel } from '@ionic/vue';
+
+const places = [
+  { name: 'Club Hollywood', type: 'Ööklubi' },
+  { name: 'Põhjala Tap Room', type: 'Baar' },
+  { name: 'Venus Club', type: 'Ööklubi' },
+  { name: 'Möku', type: 'Baar' },
+  { name: 'Nimeta', type: 'Baar' },
+  { name: 'HALL', type: 'Ööklubi' },
+];
 </script>
