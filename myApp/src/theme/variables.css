@@ -1,2 +1,18 @@
 /* For information on how to create your own theme, please see:
 http://ionicframework.com/docs/theming/ */
+
+:root {
+    --ion-color-primary: hotpink;
+    /* Change the primary color to red (for icons and buttons) */
+    --ion-color-primary-rgb: 255, 87, 51;
+    /* RGB version of the primary color */
+    --ion-color-primary-contrast: #ffffff;
+    /* Text color for primary elements */
+    --ion-color-primary-contrast-rgb: 255, 255, 255;
+    /* RGB version of the primary contrast color */
+
+    /* You can also customize other colors like secondary, success, danger, etc. */
+    --ion-color-secondary: #0cd1e8;
+    /* Customize secondary color */
+    --ion-color-tertiary: #7044ff;
+}
