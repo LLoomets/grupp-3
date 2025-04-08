@@ -5,7 +5,7 @@
         <ion-title>
           <div style="display: flex; align-items: center;">
             <img src="/logo.png" alt="Logo" style="height: 50px; margin-right: 10px;" />
-            <span>KlubiKompass</span>
+            <span class="logo-text">KlubiKompass</span>
           </div>
         </ion-title>
         <ion-buttons slot="end">
