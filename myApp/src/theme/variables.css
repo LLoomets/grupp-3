@@ -16,3 +16,8 @@ http://ionicframework.com/docs/theming/ */
     /* Customize secondary color */
     --ion-color-tertiary: #7044ff;
 }
+
+.logo-text {
+    font-family: "Lobster", sans-serif;
+    font-size: 24px;
+}
