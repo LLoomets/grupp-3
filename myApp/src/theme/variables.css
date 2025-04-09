@@ -25,3 +25,12 @@ body, html, ion-app, ion-content, ion-page, .ion-page, .md, .ios {
     font-family: "Lobster", sans-serif;
     font-size: 24px;
 }
+
+.camera-button {
+    padding: 10px;
+    border-radius: 5px;
+    background: var(--ion-color-primary);
+    color: #ffffff;
+    font-weight: 600;
+    width: 100%;
+}
