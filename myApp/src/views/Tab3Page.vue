@@ -2,7 +2,7 @@
   <ion-page>
     <ion-header>
       <ion-toolbar>
-        <ion-title>Lisa</ion-title>
+        <ion-title>Check-in</ion-title>
         <ion-buttons slot="end">
           <ion-menu-button />
         </ion-buttons>
@@ -10,7 +10,7 @@
     </ion-header>
 
     <ion-content class="ion-padding">
-      <button @click="openCamera">Ava kaamera</button>
+      <button @click="openCamera" class="camera-button">Ava kaamera</button>
     </ion-content>
   </ion-page>
 </template>

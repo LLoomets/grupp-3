@@ -9,10 +9,10 @@
       <ion-content>
         <ion-list>
           <ion-item>
-            <ion-label>Katse 1</ion-label>
+            <ion-label>Sätted</ion-label>
           </ion-item>
           <ion-item>
-            <ion-label>Katse 2</ion-label>
+            <ion-label>Disclaimer</ion-label>
           </ion-item>
         </ion-list>
       </ion-content>
