@@ -17,6 +17,10 @@ http://ionicframework.com/docs/theming/ */
     --ion-color-tertiary: #7044ff;
 }
 
+body, html, ion-app, ion-content, ion-page, .ion-page, .md, .ios {
+    font-family: 'Montserrat', sans-serif;
+}
+
 .logo-text {
     font-family: "Lobster", sans-serif;
     font-size: 24px;
