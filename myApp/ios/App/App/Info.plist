@@ -45,5 +45,9 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>See rakendus vajab kaamerat piltide tegemiseks.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>See rakendus vajab ligipääsu galeriile fotode salvestamiseks või valimiseks.</string>
 </dict>
 </plist>
