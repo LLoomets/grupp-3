@@ -49,5 +49,8 @@
 	<string>See rakendus vajab kaamerat piltide tegemiseks.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>See rakendus vajab ligipääsu galeriile fotode salvestamiseks või valimiseks.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>See rakendus vajab ligipääsu galeriile piltide salvestamiseks.</string>
+
 </dict>
 </plist>
