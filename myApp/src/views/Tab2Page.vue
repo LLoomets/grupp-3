@@ -10,21 +10,11 @@
     </ion-header>
 
     <ion-content class="ion-padding">
-      <l-map
-        style="height: 80vh; width: 100%;"
-        :zoom="13"
-        :center="mapCenter"
-      >
-        <l-tile-layer
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        />
+      <l-map style="height: 80vh; width: 100%;" :zoom="13" :center="mapCenter">
+        <l-tile-layer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
 
         <!-- Markerid baaridele ja klubidele -->
-        <l-marker
-          v-for="(place, index) in places"
-          :key="index"
-          :lat-lng="[place.lat, place.lng]"
-        >
+        <l-marker v-for="(place, index) in places" :key="index" :lat-lng="[place.lat, place.lng]">
           <l-popup>{{ place.name }} - {{ place.type }}</l-popup>
         </l-marker>
 
@@ -34,12 +24,7 @@
         </l-marker>
 
         <!-- Otsinguraadius -->
-        <l-circle
-          v-if="userLocation"
-          :lat-lng="userLocation"
-          :radius="5000"
-          color="hotpink"
-        />
+        <l-circle v-if="userLocation" :lat-lng="userLocation" :radius="3000" color="hotpink" />
       </l-map>
     </ion-content>
   </ion-page>
@@ -52,8 +37,7 @@ import {
 } from '@ionic/vue';
 
 import { LMap, LTileLayer, LMarker, LPopup, LCircle } from '@vue-leaflet/vue-leaflet';
-
-
+import { Geolocation } from '@capacitor/geolocation';
 import { ref, onMounted } from 'vue';
 
 const userLocation = ref<[number, number] | null>(null);
@@ -61,13 +45,15 @@ const mapCenter = ref<[number, number]>([59.437, 24.753]);
 const places = ref<any[]>([]);
 
 onMounted(async () => {
-  navigator.geolocation.getCurrentPosition(async (position) => {
+  try {
+    const position = await Geolocation.getCurrentPosition();
     const lat = position.coords.latitude;
     const lng = position.coords.longitude;
+
     userLocation.value = [lat, lng];
     mapCenter.value = [lat, lng];
 
-    // Overpass API päring baaride ja klubide leidmiseks 5km raadiuses
+    // Overpass API päring baaride ja klubide leidmiseks 3km raadiuses
     const overpassUrl = `https://overpass-api.de/api/interpreter?data=[out:json];node[amenity~"bar|nightclub"](around:3000,${lat},${lng});out;`;
 
     const response = await fetch(overpassUrl);
@@ -79,6 +65,8 @@ onMounted(async () => {
       lat: el.lat,
       lng: el.lon,
     }));
-  });
+  } catch (error) {
+    console.error('Geolocation error:', error);
+  }
 });
 </script>
