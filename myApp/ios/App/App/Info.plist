@@ -51,6 +51,7 @@
 	<string>See rakendus vajab ligipääsu galeriile fotode salvestamiseks või valimiseks.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>See rakendus vajab ligipääsu galeriile piltide salvestamiseks.</string>
-
+  <key>NSLocationWhenInUseUsageDescription</key>
+	<string>See rakendus vajab ligipääsu asukohale.</string>
 </dict>
 </plist>
