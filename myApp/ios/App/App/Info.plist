@@ -49,7 +49,9 @@
 	<string>See rakendus vajab kaamerat piltide tegemiseks.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>See rakendus vajab ligipääsu galeriile fotode salvestamiseks või valimiseks.</string>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>We need your location to show nearby bars and clubs.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>See rakendus vajab ligipääsu galeriile piltide salvestamiseks.</string>
+  <key>NSLocationWhenInUseUsageDescription</key>
+	<string>See rakendus vajab ligipääsu asukohale.</string>
 </dict>
 </plist>
