@@ -19,7 +19,7 @@
     </ion-menu>
 
     <ion-tabs>
-      <ion-router-outlet id="tab-content"></ion-router-outlet> <!-- Assign id here -->
+      <ion-router-outlet id="tab-content"></ion-router-outlet> 
 
       <ion-tab-bar slot="bottom">
         <ion-tab-button tab="home" href="/tabs/tab1">
