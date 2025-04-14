@@ -19,7 +19,7 @@
 </template>
 
 <script setup lang="ts">
-import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonButtons, IonMenuButton } from '@ionic/vue';
+import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonButtons, IonMenuButton, IonButton } from '@ionic/vue';
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera'
 import { useRouter } from 'vue-router'
 
