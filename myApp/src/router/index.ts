@@ -41,7 +41,11 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/ar-view',
     component: ARView
-  }
+  },
+  {
+    path: '/settings',
+    component: () => import('@/views/SettingsPage.vue')
+  },  
 ]
 
 const router = createRouter({
