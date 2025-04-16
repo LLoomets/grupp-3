@@ -10,8 +10,8 @@
     </ion-header>
 
     <ion-content class="ion-padding">
-      <button @click="openCamera" class="camera-button">Ava kaamera - tavaline foto</button>
-      <ion-button expand="block" color="tertiary" @click="goToAR">
+      <ion-button @click="openCamera" class="camera-button">Ava kaamera - tavaline foto</ion-button>
+      <ion-button @click="goToAR" class="ar-camera-button">
         Ava AR kaamera
       </ion-button>
     </ion-content>

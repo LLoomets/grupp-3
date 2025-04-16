@@ -26,11 +26,25 @@ body, html, ion-app, ion-content, ion-page, .ion-page, .md, .ios {
     font-size: 24px;
 }
 
-.camera-button {
-    padding: 10px;
-    border-radius: 5px;
-    background: var(--ion-color-primary);
-    color: #ffffff;
+.camera-button,
+.settings-save-button {
+    --background: var(--ion-color-primary);
+    --color: var(--ion-color-primary-contrast);
+    --border-radius: 5px;
     font-weight: 600;
+    font-size: 16px;
     width: 100%;
+    margin-top: 8px;
+    text-transform: none;
+}
+
+.ar-camera-button {
+    --background: var(--ion-color-tertiary);
+    --color: var(--ion-color-primary-contrast);
+    --border-radius: 5px;
+    font-weight: 600;
+    font-size: 16px;
+    width: 100%;
+    margin-top: 8px;
+    text-transform: none;
 }

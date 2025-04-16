@@ -18,7 +18,7 @@
         </ion-item>
   
         <!-- Save Button -->
-        <ion-button expand="full" @click="saveSettings">
+        <ion-button @click="saveSettings" class="settings-save-button">
           Salvesta
         </ion-button>
       </ion-content>
