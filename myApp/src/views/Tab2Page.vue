@@ -19,7 +19,7 @@
         </l-marker>
 
         <!-- Kasutaja marker -->
-        <l-marker :lat-lng="userLocation" v-if="userLocation">
+        <l-marker :lat-lng="userLocation" v-if="userLocation" :icon="userIcon">
           <l-popup>Sinu asukoht</l-popup>
         </l-marker>
 
@@ -39,6 +39,17 @@ import {
 import { LMap, LTileLayer, LMarker, LPopup, LCircle } from '@vue-leaflet/vue-leaflet';
 import { Geolocation } from '@capacitor/geolocation';
 import { ref, onMounted } from 'vue';
+import L from 'leaflet';
+
+// Kohandatud punane marker
+const userIcon = L.icon({
+  iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png',
+  shadowUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png',
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41]
+});
 
 const userLocation = ref<[number, number] | null>(null);
 const mapCenter = ref<[number, number]>([59.437, 24.753]);
