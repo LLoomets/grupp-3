@@ -14,8 +14,25 @@
         <l-tile-layer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
 
         <!-- Markerid baaridele ja klubidele -->
-        <l-marker v-for="(place, index) in places" :key="index" :lat-lng="[place.lat, place.lng]">
-          <l-popup>{{ place.name }} - {{ place.type }}</l-popup>
+        <l-marker
+          v-for="(place, index) in places"
+          :key="index"
+          :lat-lng="[place.lat, place.lng]"
+        >
+          <l-popup>
+            <div style="display: flex; flex-direction: column; width: 200px; height: 75px;">
+              <strong>{{ place.name }}</strong>
+              <small>{{ place.type }}</small>
+              <ion-button
+                size="small"
+                color="primary"
+                @click="addToBucketlist(place)"
+                :disabled="isPlaceSaved(place)"
+              >
+                {{ isPlaceSaved(place) ? 'Salvestatud' : 'Lisa bucket listi' }}
+              </ion-button>
+            </div>
+          </l-popup>
         </l-marker>
 
         <!-- Kasutaja marker -->
@@ -80,4 +97,19 @@ onMounted(async () => {
     console.error('Geolocation error:', error);
   }
 });
+
+const addToBucketlist = (place: any) => {
+  const saved = JSON.parse(localStorage.getItem('bucketlist') || '[]');
+  const alreadySaved = saved.some((p: any) => p.lat === place.lat && p.lng === place.lng);
+  if (!alreadySaved) {
+    saved.push(place);
+    localStorage.setItem('bucketlist', JSON.stringify(saved));
+  }
+};
+
+const isPlaceSaved = (place: any) => {
+  const saved = JSON.parse(localStorage.getItem('bucketlist') || '[]');
+  return saved.some((p: any) => p.lat === place.lat && p.lng === place.lng);
+};
+
 </script>
