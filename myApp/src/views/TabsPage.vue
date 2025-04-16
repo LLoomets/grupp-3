@@ -11,7 +11,7 @@
           <ion-item button router-link="/settings">
             <ion-label>Sätted</ion-label>
           </ion-item>
-          <ion-item>
+          <ion-item router-link="/disclaimer">
             <ion-label>Disclaimer</ion-label>
           </ion-item>
         </ion-list>

@@ -45,7 +45,11 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/settings',
     component: () => import('@/views/SettingsPage.vue')
-  },  
+  },
+  {
+    path: '/disclaimer',
+    component: () => import('@/views/DisclaimerPage.vue')
+  },
 ]
 
 const router = createRouter({
