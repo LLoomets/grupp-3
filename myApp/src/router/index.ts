@@ -41,7 +41,12 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/ar-view',
     component: ARView
+  },
+  {
+    path: '/disclaimer',
+    component: () => import('@/views/DisclaimerPage.vue')
   }
+  
 ]
 
 const router = createRouter({
