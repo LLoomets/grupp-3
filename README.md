@@ -48,15 +48,8 @@ Brauseris peaks avanema http://localhost:8100/
 7. Ühendatud mobiil peaks ilmuma Android Studios devices alla
 8. Käivita rakendus
 
-#### IOS käivitamine füüsilises mobiilis:
-1. Luba arendajarežiim iPhone’is: Ava Seaded → Privaatsus & turvalisus - Lülita sisse Arendajarežiim (Developer Mode) - Taaskäivita iPhone ja kinnita valik
-2. Ühenda iPhone Maciga USB-kaabli abil: Kui ilmub teade "Usalda seda arvutit" (Trust This Computer), vajuta "Usalda" (Trust)
-3. Seo iPhone Xcode’iga: Ava Xcode käsuga npx cap open ios - Mine Xcode → Settings → Devices & Simulators - Leia oma iPhone "Devices" vahekaardilt - Kui see on märgitud kui (Unpaired), vajuta "Pair" - Kinnita sidumistaotlus iPhone’is
-4. Käivita rakendus iPhone’il: Ava oma projekt Xcode’is käsuga npx cap open ios - Vali seadmete nimekirjast oma iPhone - Vajuta Käivita ▶, et rakendus telefonis käivitada
-5. Anna  iPhone'is luba arendajaäpile (developer app): Ava Seaded → Üldine → VPN ja seadmehaldus – vajuta loodud äpile ja anna sellele luba.
-
-
 ### IOS käivitamine
+#### Emulaatoris
 1. Liigu rakenduse kausta (kui seal juba ei ole) kasutades käsurida <br />
 `cd myApp`
 2. Ehita rakendus <br />
@@ -72,5 +65,10 @@ Brauseris peaks avanema http://localhost:8100/
 7. Käivita rakendus <br />
   Vajuta Xcode’is Käivita ▶ nuppu
 
-
+#### Füüsilises IOS mobiilis:
+1. Luba arendajarežiim iPhone’is: Ava Seaded → Privaatsus & turvalisus - Lülita sisse Arendajarežiim (Developer Mode) - Taaskäivita iPhone ja kinnita valik
+2. Ühenda iPhone Maciga USB-kaabli abil: Kui ilmub teade "Usalda seda arvutit" (Trust This Computer), vajuta "Usalda" (Trust)
+3. Seo iPhone Xcode’iga: Ava Xcode käsuga npx cap open ios - Mine Xcode → Settings → Devices & Simulators - Leia oma iPhone "Devices" vahekaardilt - Kui see on märgitud kui (Unpaired), vajuta "Pair" - Kinnita sidumistaotlus iPhone’is
+4. Käivita rakendus iPhone’il: Ava oma projekt Xcode’is käsuga npx cap open ios - Vali seadmete nimekirjast oma iPhone - Vajuta Käivita ▶, et rakendus telefonis käivitada
+5. Anna  iPhone'is luba arendajaäpile (developer app): Ava Seaded → Üldine → VPN ja seadmehaldus – vajuta loodud äpile ja anna sellele luba.
 
