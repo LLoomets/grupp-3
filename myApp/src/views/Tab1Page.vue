@@ -25,6 +25,7 @@
       <div v-else-if="suggestedPlace" style="margin-top: 20px;">
         <h3>✨ Soovitatud koht</h3>
         <p><strong>{{ suggestedPlace.name }}</strong> – {{ suggestedPlace.type }}</p>
+        <p v-if="suggestedPlace.address">📍 {{ suggestedPlace.address }}</p>
       </div>
     </ion-content>
   </ion-page>
@@ -53,16 +54,30 @@ onMounted(async () => {
     const response = await fetch(overpassUrl);
     const data = await response.json();
 
-    const places = data.elements.map((el: any) => ({
-      name: el.tags?.name || 'Tundmatu koht',
-      type: el.tags?.amenity || 'Tundmatu',
-      lat: el.lat,
-      lng: el.lon,
-    }));
+    const places = data.elements.map((el: any) => {
+      const tags = el.tags || {};
+      const addressParts = [];
 
-    if (places.length > 0) {
-      const randomIndex = Math.floor(Math.random() * places.length);
-      suggestedPlace.value = places[randomIndex];
+      if (tags['addr:street']) addressParts.push(tags['addr:street']);
+      if (tags['addr:housenumber']) addressParts.push(tags['addr:housenumber']);
+      if (tags['addr:city']) addressParts.push(tags['addr:city']);
+
+      const address = addressParts.join(', ');
+
+      return {
+        name: tags.name || 'Tundmatu koht',
+        type: tags.amenity || 'Tundmatu',
+        address: address || 'Aadress puudub',
+        lat: el.lat,
+        lng: el.lon,
+      };
+    });
+
+    const knownPlaces = places.filter((p:any) => p.name !== 'Tundmatu koht');
+
+    if (knownPlaces.length > 0) {
+      const randomIndex = Math.floor(Math.random() * knownPlaces.length);
+      suggestedPlace.value = knownPlaces[randomIndex];
     }
 
   } catch (error) {
@@ -71,4 +86,5 @@ onMounted(async () => {
     loading.value = false;
   }
 });
+
 </script>
