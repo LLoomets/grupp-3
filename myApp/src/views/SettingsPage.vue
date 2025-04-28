@@ -16,6 +16,11 @@
         <ion-label position="stacked">Sinu nimi</ion-label>
         <ion-input v-model="userName" placeholder="Sisesta nimi" />
       </ion-item>
+      <!-- Email input field -->
+      <ion-item>
+        <ion-label position="stacked">Email</ion-label>
+        <ion-input v-model="userEmail" placeholder="Sisesta email" />
+      </ion-item>
 
       <!-- Save Button -->
       <ion-button expand="block" @click="saveSettings" class="settings-save-button">
@@ -33,17 +38,46 @@ import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonItem, IonLabel
 import { ref, onMounted } from 'vue';
 
 const userName = ref('');
+const userEmail = ref('');
 const toastOpen = ref(false);
 const toastMessage = ref('');
 
 onMounted(() => {
   userName.value = localStorage.getItem('userName') || '';
+  userEmail.value = localStorage.getItem('userEmail') || '';
 });
 
-function saveSettings() {
+async function saveSettings() {
+  // save locally
   localStorage.setItem('userName', userName.value);
+  localStorage.setItem('userEmail', userEmail.value);
 
-  toastMessage.value = 'Andmed on salvestatud!';
+  // post to server
+  try {
+    const response = await fetch('https://reqres.in/api/users', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': 'reqres-free-v1',
+      },
+      body: JSON.stringify({
+        name: userName.value,
+        email: userEmail.value 
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error('Serveri viga');
+    }
+
+    const data = await response.json();
+    console.log('Serveri vastus:', data);
+    toastMessage.value = 'Andmed on salvestatud!';
+  } catch (error) {
+    console.error('Andmete saatmine ebaõnnestus:', error);
+    toastMessage.value = 'Andmete saatmine ebaõnnestus!';
+  }
+
   toastOpen.value = true;
 }
 </script>
