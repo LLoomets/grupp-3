@@ -10,25 +10,18 @@
     </ion-header>
 
     <ion-content class="ion-padding">
-      <!-- Display user name -->
+      <!-- Kuvame kasutaja nime -->
       <h2>Tere, {{ userName || 'külaline' }}!</h2>
 
       <!-- Külastatud kohad -->
       <ion-list>
-        <ion-item v-for="(place, index) in visitedPlaces" :key="index">
+        <ion-item v-for="(checkIn, index) in activityFeed" :key="index">
           <ion-label>
-            <h2>{{ place.name }}</h2>
-            <p>{{ place.visitDate }}</p>
-          </ion-label>
-        </ion-item>
-      </ion-list>
-
-      <!-- Bucket List kohad -->
-      <ion-list>
-        <ion-item v-for="(wish, index) in wishList" :key="index">
-          <ion-label>
-            <h2>{{ wish.name }} - Bucket List</h2>
-            <p>{{ wish.type }}</p>
+            <h2>Check-in @ {{ checkIn.place?.name || 'Tundmatu koht' }} - {{ checkIn.visitDate }}</h2>
+            <p>tuju: {{ checkIn.mood }}</p>
+            <p>joogid: {{ checkIn.drinks }}</p>
+            <p>märkmed: {{ checkIn.notes }}</p>
+            <img :src="checkIn.photo" alt="Check-in photo" style="width: 100px; height: 100px; object-fit: cover;" />
           </ion-label>
         </ion-item>
       </ion-list>
@@ -38,29 +31,24 @@
 
 <script setup lang="ts">
 import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonList, IonItem, IonLabel, IonButtons, IonMenuButton } from '@ionic/vue';
-import { ref, onMounted, watch } from 'vue';
+import { ref, watch } from 'vue';
+import { onIonViewWillEnter } from '@ionic/vue';
 
-// User name stored locally
 const userName = ref('');
+const activityFeed = ref<any[]>([]);
 
-// Data for visited places and wish list
-const visitedPlaces = [
-  { name: 'Club Hollywood', visitDate: '2025-03-01' },
-  { name: 'Põhjala Tap Room', visitDate: '2025-02-20' },
-];
-
-const wishList = [
-  { name: 'Venus Club', type: 'Ööklubi' },
-  { name: 'Möku', type: 'Baar' },
-];
-
-onMounted(() => {
-  // Fetch the user's name from localStorage
+onIonViewWillEnter(() => {
+  // Laeme kasutaja nime localStorage-st
   userName.value = localStorage.getItem('userName') || '';
-});
 
-// Watch for changes in localStorage to update the userName when returning to this page
-watch(() => localStorage.getItem('userName'), (newValue) => {
-  userName.value = newValue || '';
+  // Laeme salvestatud activity feed
+  const storedFeed = localStorage.getItem('activityFeed');
+  if (storedFeed) {
+    try {
+      activityFeed.value = JSON.parse(storedFeed);
+    } catch (error) {
+      console.error('Vigane activityFeed JSON:', error);
+    }
+  }
 });
 </script>
