@@ -10,12 +10,17 @@
     </ion-header>
 
     <ion-content class="ion-padding">
-      <!-- Kuvame kasutaja nime -->
       <h2>Tere, {{ userName || 'külaline' }}!</h2>
 
-      <!-- Külastatud kohad -->
       <ion-list>
-        <ion-item v-for="(checkIn, index) in activityFeed" :key="index">
+        <ion-item 
+          v-for="(checkIn, index) in activityFeed" 
+          :key="index" 
+          :class="[
+            highlightedCheckIn && highlightedCheckIn.place?.name === checkIn.place?.name ? 'highlighted' : '',
+            temporaryHighlight && temporaryHighlight.place?.name === checkIn.place?.name ? 'highlight-bg' : ''
+          ]"
+        >
           <ion-label>
             <h2>Check-in @ {{ checkIn.place?.name || 'Tundmatu koht' }} - {{ checkIn.visitDate }}</h2>
             <p>tuju: {{ checkIn.mood }}</p>
@@ -30,18 +35,43 @@
 </template>
 
 <script setup lang="ts">
-import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonList, IonItem, IonLabel, IonButtons, IonMenuButton } from '@ionic/vue';
-import { ref, watch } from 'vue';
-import { onIonViewWillEnter } from '@ionic/vue';
+import {
+  IonPage,
+  IonHeader,
+  IonToolbar,
+  IonTitle,
+  IonContent,
+  IonList,
+  IonItem,
+  IonLabel,
+  IonButtons,
+  IonMenuButton,
+  onIonViewWillEnter
+} from '@ionic/vue';
+import { ref } from 'vue';
+import { useRoute } from 'vue-router';
 
 const userName = ref('');
 const activityFeed = ref<any[]>([]);
+const highlightedCheckIn = ref<any>(null);
+const temporaryHighlight = ref<any>(null);
+
+const route = useRoute();
 
 onIonViewWillEnter(() => {
-  // Laeme kasutaja nime localStorage-st
-  userName.value = localStorage.getItem('userName') || '';
+  const checkInParam = route.query.checkIn ? JSON.parse(route.query.checkIn as string) : null;
+  if (checkInParam) {
+    highlightedCheckIn.value = checkInParam;
+    temporaryHighlight.value = checkInParam;
 
-  // Laeme salvestatud activity feed
+    setTimeout(() => {
+      temporaryHighlight.value = null;
+    }, 1000);
+  }
+});
+
+onIonViewWillEnter(() => {
+  userName.value = localStorage.getItem('userName') || '';
   const storedFeed = localStorage.getItem('activityFeed');
   if (storedFeed) {
     try {
@@ -52,3 +82,15 @@ onIonViewWillEnter(() => {
   }
 });
 </script>
+
+<style scoped>
+.highlighted {
+  border-left: 5px solid hotpink;
+}
+
+/* Terve ion-item highlight */
+.highlight-bg::part(native) {
+  background-color: hotpink !important;
+  transition: background-color 0.3s ease;
+}
+</style>
