@@ -6,6 +6,8 @@ import { IonicVue } from '@ionic/vue';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 
+import { StatusBar, Style } from '@capacitor/status-bar';
+
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: new URL('leaflet/dist/images/marker-icon-2x.png', import.meta.url).href,
   iconUrl: new URL('leaflet/dist/images/marker-icon.png', import.meta.url).href,
@@ -40,6 +42,10 @@ import '@ionic/vue/css/palettes/dark.always.css';
 
 /* Theme variables */
 import './theme/variables.css';
+
+StatusBar.setOverlaysWebView({ overlay: false });
+StatusBar.setBackgroundColor({ color: '#121212' });
+StatusBar.setStyle({ style: Style.Dark });
 
 const app = createApp(App)
   .use(IonicVue)
