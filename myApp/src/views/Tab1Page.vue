@@ -27,23 +27,54 @@
         <p><strong>{{ suggestedPlace.name }}</strong> – {{ suggestedPlace.type }}</p>
         <p v-if="suggestedPlace.address">📍 {{ suggestedPlace.address }}</p>
       </div>
+
+      <div v-if="latestCheckIns.length > 0">
+        <h3>Viimased Check-in'id</h3>
+        <ion-list>
+          <ion-item
+            v-for="(checkIn, index) in latestCheckIns"
+            :key="index"
+            button
+            @click="goToProfile(checkIn)"
+          >
+            <ion-label>
+              <h2>Check-in @ {{ checkIn.place?.name || 'Tundmatu koht' }}</h2>
+              <p>{{ checkIn.visitDate }}</p>
+              <img :src="checkIn.photo" alt="Check-in photo" style="width: 100px; height: 100px; object-fit: cover;" />
+            </ion-label>
+          </ion-item>
+        </ion-list>
+      </div>
     </ion-content>
   </ion-page>
 </template>
 
 <script setup lang="ts">
-import {
-  IonPage, IonHeader, IonToolbar, IonTitle,
-  IonContent, IonButtons, IonMenuButton, IonSpinner
-} from '@ionic/vue';
-
-import { ref, onMounted } from 'vue';
+import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonButtons, IonMenuButton, IonSpinner, IonList, IonItem, IonLabel, onIonViewWillEnter } from '@ionic/vue';
+import { ref, computed } from 'vue';
 import { Geolocation } from '@capacitor/geolocation';
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
 
 const suggestedPlace = ref<any>(null);
 const loading = ref(true);
+const activityFeed = ref<any[]>([]);
 
-onMounted(async () => {
+// Arvutatud väärtus: 3 kõige uuemat check-in’i
+const latestCheckIns = computed(() => {
+  const sortedFeed = [...activityFeed.value].sort((a, b) => {
+    return new Date(b.visitDate).getTime() - new Date(a.visitDate).getTime();
+  });
+  return sortedFeed.slice(0, 3);
+});
+
+function goToProfile(checkIn: any) {
+  // Edastame check-in'i andmed koos highlight väärtusega
+  router.push({ path: '/tabs/tab5', query: { checkIn: JSON.stringify(checkIn), highlight: 'true' } });
+}
+
+onIonViewWillEnter(async () => {
   try {
     const position = await Geolocation.getCurrentPosition();
     const lat = position.coords.latitude;
@@ -73,7 +104,7 @@ onMounted(async () => {
       };
     });
 
-    const knownPlaces = places.filter((p:any) => p.name !== 'Tundmatu koht');
+    const knownPlaces = places.filter((p: any) => p.name !== 'Tundmatu koht');
 
     if (knownPlaces.length > 0) {
       const randomIndex = Math.floor(Math.random() * knownPlaces.length);
@@ -85,6 +116,15 @@ onMounted(async () => {
   } finally {
     loading.value = false;
   }
-});
 
+  // Laeme activityFeed localStorage’ist
+  const storedFeed = localStorage.getItem('activityFeed');
+  if (storedFeed) {
+    try {
+      activityFeed.value = JSON.parse(storedFeed);
+    } catch (error) {
+      console.error('Vigane activityFeed JSON:', error);
+    }
+  }
+});
 </script>
