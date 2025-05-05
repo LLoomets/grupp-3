@@ -39,7 +39,7 @@
         </l-map>
 
         <!-- otsingu tulemused -->
-        <ion-list v-if="searchQuery && filteredPlaces.length"
+        <ion-list v-if="searchQuery && filteredPlaces.length && showResults"
           style="position: absolute; top: 0; left: 0; width: 100%; z-index: 9999; max-height: 70%; overflow-y: auto;">
           <ion-item v-for="(place, index) in filteredPlaces" :key="'overlay-' + index" button @click="centerMap(place)">
             {{ place.name }}
@@ -59,7 +59,7 @@ import {
 
 import { LMap, LTileLayer, LMarker, LPopup, LCircle } from '@vue-leaflet/vue-leaflet';
 import { Geolocation } from '@capacitor/geolocation';
-import { ref, onMounted, computed } from 'vue';
+import { ref, onMounted, computed, watch } from 'vue';
 import L from 'leaflet';
 
 // Kohandatud punane marker
@@ -76,10 +76,19 @@ const userLocation = ref<[number, number] | null>(null);
 const mapCenter = ref<[number, number]>([59.437, 24.753]);
 const places = ref<any[]>([]);
 const searchQuery = ref('');
+const showResults = ref(true);
 
 const centerMap = (place: any) => {
   mapCenter.value = [place.lat, place.lng];
+  showResults.value = false;
+  searchQuery.value = place.name;
 };
+
+watch(searchQuery, (newQuery) => {
+  if (newQuery.trim().length > 0) {
+    showResults.value = true;
+  }
+});
 
 const filteredPlaces = computed(() => {
   const query = searchQuery.value.toLowerCase();
