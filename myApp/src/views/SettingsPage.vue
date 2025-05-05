@@ -34,15 +34,15 @@
 </template>
 
 <script setup lang="ts">
-import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonItem, IonLabel, IonInput, IonButtons, IonBackButton, IonButton, IonToast } from '@ionic/vue';
-import { ref, onMounted } from 'vue';
+import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonItem, IonLabel, IonInput, IonButtons, IonBackButton, IonButton, IonToast, onIonViewWillEnter } from '@ionic/vue';
+import { ref } from 'vue';
 
 const userName = ref('');
 const userEmail = ref('');
 const toastOpen = ref(false);
 const toastMessage = ref('');
 
-onMounted(() => {
+onIonViewWillEnter(() => {
   userName.value = localStorage.getItem('userName') || '';
   userEmail.value = localStorage.getItem('userEmail') || '';
 });

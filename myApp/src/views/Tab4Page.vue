@@ -16,6 +16,8 @@
             <h2>{{ item.name }}</h2>
             <p>{{ item.type }}</p>
           </ion-label>
+          <!-- Check-in nupp viib tab 3-le -->
+          <ion-button fill="clear" @click="goToTab3(item)">Check-in</ion-button>
           <ion-button fill="clear" @click="removeItem(index)">❌</ion-button>
         </ion-item>
       </ion-list>
@@ -30,9 +32,10 @@
 <script setup lang="ts">
 import {
   IonPage, IonHeader, IonToolbar, IonTitle, IonContent,
-  IonList, IonItem, IonLabel, IonButtons, IonMenuButton, IonButton
+  IonList, IonItem, IonLabel, IonButtons, IonMenuButton, IonButton, onIonViewWillEnter
 } from '@ionic/vue';
-import { ref, onMounted } from 'vue';
+import { ref } from 'vue';
+import { useRouter } from 'vue-router'; // Vue Routeri importimine
 
 const bucketItems = ref<any[]>([]);
 
@@ -50,8 +53,25 @@ const removeItem = (index: number) => {
   localStorage.setItem('bucketlist', JSON.stringify(bucketItems.value));
 };
 
+// Liikumine tab 3-le, kui check-in nuppule vajutatakse ja eemaldatakse bucketlistist
+const router = useRouter();
+const goToTab3 = (item: any) => {
+  // Leia indeksi alusel ja eemalda bucketlistist
+  const index = bucketItems.value.findIndex(
+    (i) => i.name === item.name && i.type === item.type
+  );
+  if (index !== -1) {
+    bucketItems.value.splice(index, 1);
+    localStorage.setItem('bucketlist', JSON.stringify(bucketItems.value));
+  }
+
+  // Seejärel suuna tab3-le
+  router.push({ path: '/tabs/tab3', query: { name: item.name, type: item.type } });
+};
+
+
 // Lae bucket list, kui komponent on montaažitud
-onMounted(() => {
+onIonViewWillEnter(() => {
   loadBucketList();
 });
 </script>
