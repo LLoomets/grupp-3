@@ -54,12 +54,12 @@
 <script setup lang="ts">
 import {
   IonPage, IonHeader, IonToolbar, IonTitle, IonContent,
-  IonButtons, IonMenuButton, IonInput, IonItem, IonList, IonNote, IonButton
+  IonButtons, IonMenuButton, IonInput, IonItem, IonList, IonNote, IonButton, onIonViewWillEnter
 } from '@ionic/vue';
 
 import { LMap, LTileLayer, LMarker, LPopup, LCircle } from '@vue-leaflet/vue-leaflet';
 import { Geolocation } from '@capacitor/geolocation';
-import { ref, onMounted, computed, watch } from 'vue';
+import { ref, computed, watch } from 'vue';
 import L from 'leaflet';
 
 // Kohandatud punane marker
@@ -98,9 +98,13 @@ const filteredPlaces = computed(() => {
   );
 });
 
-onMounted(async () => {
+onIonViewWillEnter(async () => {
   try {
-    const position = await Geolocation.getCurrentPosition();
+    const position = await Geolocation.getCurrentPosition({
+      enableHighAccuracy: true,
+      timeout: 15000,
+      maximumAge: 0
+    });
     const lat = position.coords.latitude;
     const lng = position.coords.longitude;
 
