@@ -59,18 +59,23 @@
 import {
   IonPage, IonHeader, IonToolbar, IonTitle, IonContent,
   IonButtons, IonMenuButton, IonButton, IonInput, IonTextarea,
-  IonSearchbar, IonLabel, IonSelect, IonSelectOption, IonItem, IonToggle
+  IonSearchbar, IonLabel, IonSelect, IonSelectOption, IonItem, IonToggle,
+  onIonViewWillEnter, alertController
 } from '@ionic/vue';
 
 import { Capacitor } from '@capacitor/core';
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 import { Filesystem, Directory } from '@capacitor/filesystem';
 import { Geolocation } from '@capacitor/geolocation';
-import { useRouter } from 'vue-router';
-import { ref, onMounted, watch, computed } from 'vue';
-import { alertController } from '@ionic/vue';
+import { useRouter, useRoute } from 'vue-router';
+import { ref, watch, computed } from 'vue';
 
+// Bucket list muudatused
+const bucketItems = ref<any[]>(JSON.parse(localStorage.getItem('bucketlist') || '[]'));
+
+// Ülejäänud muutujad
 const router = useRouter();
+const route = useRoute();
 
 const mood = ref('');
 const drinks = ref('');
@@ -125,18 +130,41 @@ const goToAR = () => {
   router.push('/ar-view');
 };
 
-// Kohtade laadimine
-onMounted(async () => {
+// Kui valiti koht bucketlistist
+const preselectPlaceFromQuery = () => {
+  const name = route.query.name as string;
+  const type = route.query.type as string;
+
+  if (name && type) {
+    const match = places.value.find(
+      (p) => p.name === name && p.type === type
+    );
+    if (match) {
+      selectedPlace.value = match;
+    } else {
+      // Kui ei leitud automaatselt sobivat kohta, lisa käsitsi
+      manualEntryActive.value = true;
+      manualPlaceName.value = name;
+      manualPlaceType.value = type;
+    }
+  }
+};
+
+// Kohtade laadimine vaate avamisel
+onIonViewWillEnter(async () => {
   try {
+    // Hangi asukoht
     const position = await Geolocation.getCurrentPosition();
     const lat = position.coords.latitude;
     const lng = position.coords.longitude;
 
+    // Küsi ümbruskonna baarid ja klubid Overpass API kaudu
     const overpassUrl = `https://overpass-api.de/api/interpreter?data=[out:json];node[amenity~"bar|nightclub"](around:3000,${lat},${lng});out;`;
 
     const response = await fetch(overpassUrl);
     const data = await response.json();
 
+    // Salvesta kohtade andmed
     places.value = data.elements.map((el: any) => ({
       name: el.tags?.name || 'Tundmatu koht',
       type: el.tags?.amenity || 'Tundmatu',
@@ -145,6 +173,9 @@ onMounted(async () => {
     }));
 
     filteredPlaces.value = places.value;
+
+    // Kontrolli, kas bucketlistist tuli automaatne valik
+    preselectPlaceFromQuery();
   } catch (error) {
     console.error('Geolocation või API viga:', error);
   }
@@ -161,15 +192,17 @@ watch(searchQuery, (newQuery) => {
 
 // Salvesta check-in
 const saveCheckIn = async () => {
+  // Koht vastavalt valikule või käsitsi sisestusele
   const place = manualEntryActive.value
-  ? {
-      name: manualPlaceName.value.trim(),
-      type: manualPlaceType.value.trim() || 'Määramata',
-      lat: null,
-      lng: null,
-    }
-  : selectedPlace.value;
+    ? {
+        name: manualPlaceName.value.trim(),
+        type: manualPlaceType.value.trim() || 'Määramata',
+        lat: null,
+        lng: null,
+      }
+    : selectedPlace.value;
 
+  // Koosta check-in objekt
   const checkIn = {
     place,
     photo: photoUrl.value,
@@ -179,10 +212,22 @@ const saveCheckIn = async () => {
     visitDate: new Date().toLocaleString(),
   };
 
+  // Salvesta localStorage'i
   let activityFeed = JSON.parse(localStorage.getItem('activityFeed') || '[]');
   activityFeed.push(checkIn);
   localStorage.setItem('activityFeed', JSON.stringify(activityFeed));
 
+  // Kui check-in lõppes, uuenda bucket list
+  if (selectedPlace.value) {
+    const index = bucketItems.value.findIndex(
+      (i) => i.name === selectedPlace.value.name && i.type === selectedPlace.value.type
+    );
+    if (index !== -1) {
+      bucketItems.value.splice(index, 1); // Eemalda koht bucket listist
+      localStorage.setItem('bucketlist', JSON.stringify(bucketItems.value)); // Uuenda 'localStorage'
+    }
+  }
+  
   // Tühjenda väljad
   mood.value = '';
   drinks.value = '';
@@ -197,12 +242,14 @@ const saveCheckIn = async () => {
   await showAlert();
 };
 
+// Nupp "Salvesta" on aktiivne ainult kui koht on valitud või käsitsi sisestatud nimi on olemas
 const canSaveCheckIn = computed(() => {
   return manualEntryActive.value
     ? manualPlaceName.value.trim().length > 0
     : selectedPlace.value !== null;
 });
 
+// Kuvab kinnitusakna
 const showAlert = async () => {
   const alert = await alertController.create({
     header: 'Check-in salvestatud',
