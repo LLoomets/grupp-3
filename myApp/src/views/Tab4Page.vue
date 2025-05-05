@@ -16,8 +16,12 @@
             <h2>{{ item.name }}</h2>
             <p>{{ item.type }}</p>
           </ion-label>
-          <!-- Check-in nupp viib tab 3-le -->
-          <ion-button fill="clear" @click="goToTab3(item)">Check-in</ion-button>
+          <!-- Kontrollige, kas check-in on pooleli, et muuta nupp -->
+          <ion-button 
+            fill="clear" 
+            @click="goToTab3(item, index)">
+            {{ item.isCheckingIn ? 'Check-in pooleli' : 'Check-in' }}
+          </ion-button>
           <ion-button fill="clear" @click="removeItem(index)">❌</ion-button>
         </ion-item>
       </ion-list>
@@ -53,27 +57,29 @@ const removeItem = (index: number) => {
   localStorage.setItem('bucketlist', JSON.stringify(bucketItems.value));
 };
 
-// Liikumine tab 3-le, kui check-in nuppule vajutatakse ja eemaldatakse bucketlistist
+// Liikumine tab 3-le, kui check-in nuppule vajutatakse
 const router = useRouter();
-const goToTab3 = (item: any) => {
-  // Leia indeksi alusel ja eemalda bucketlistist
-  const index = bucketItems.value.findIndex(
-    (i) => i.name === item.name && i.type === item.type
-  );
-  if (index !== -1) {
-    bucketItems.value.splice(index, 1);
+const goToTab3 = (item: any, index: number) => {
+  // Kui check-in ei ole pooleli, siis märgi see pooleli ja suuna tab3-le
+  if (!item.isCheckingIn) {
+    bucketItems.value[index].isCheckingIn = true;
     localStorage.setItem('bucketlist', JSON.stringify(bucketItems.value));
   }
 
-  // Seejärel suuna tab3-le
+  // Suuna tab3-le
   router.push({ path: '/tabs/tab3', query: { name: item.name, type: item.type } });
 };
-
 
 // Lae bucket list, kui komponent on montaažitud
 onIonViewWillEnter(() => {
   loadBucketList();
 });
+
+// Kui check-in on salvestatud, uuenda bucket listi ja eemalda see koht
+const saveCheckIn = (item: any, index: number) => {
+  bucketItems.value.splice(index, 1);
+  localStorage.setItem('bucketlist', JSON.stringify(bucketItems.value));
+};
 </script>
 
 <style scoped>
