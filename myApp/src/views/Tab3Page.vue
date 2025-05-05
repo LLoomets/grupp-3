@@ -154,7 +154,11 @@ const preselectPlaceFromQuery = () => {
 onIonViewWillEnter(async () => {
   try {
     // Hangi asukoht
-    const position = await Geolocation.getCurrentPosition();
+    const position = await Geolocation.getCurrentPosition({
+      enableHighAccuracy: true,
+      timeout: 15000,
+      maximumAge: 0
+    });
     const lat = position.coords.latitude;
     const lng = position.coords.longitude;
 
