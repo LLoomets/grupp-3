@@ -23,7 +23,7 @@
       ></ion-searchbar>
 
       <ion-label>Vali koht check-in'iks:</ion-label>
-      <ion-select v-model="selectedPlace" placeholder="Vali koht">
+      <ion-select v-model="selectedPlace" placeholder="Vali koht" :disabled="manualEntryActive">
         <ion-select-option
           v-for="(place, index) in filteredPlaces"
           :key="index"
@@ -33,13 +33,24 @@
         </ion-select-option>
       </ion-select>
 
+      <!-- Või lisa uus koht käsitsi -->
+      <ion-item lines="none">
+        <ion-label>Ei leidnud sobivat? </ion-label>
+        <ion-toggle v-model="manualEntryActive">Lisa koht käsitsi</ion-toggle>
+      </ion-item>
+
+      <div v-if="manualEntryActive" class="manual-entry">
+        <ion-input v-model="manualPlaceName" placeholder="Koha nimi" />
+        <ion-input v-model="manualPlaceType" placeholder="Tüüp (nt bar, nightclub)" />
+      </div>
+
       <!-- Meeleolu, joogid ja märkmed -->
-      <ion-input v-model="mood" placeholder="Lisa tuju" />
-      <ion-input v-model="drinks" placeholder="Mis joogid olid?" />
-      <ion-textarea v-model="notes" placeholder="Lisa märkmed"></ion-textarea>
+      <ion-input v-model="mood" placeholder="Kuidas tuju?" />
+      <ion-input v-model="drinks" placeholder="Mis jooke jõid?" />
+      <ion-textarea v-model="notes" placeholder="Lisa märkmeid"></ion-textarea>
 
       <!-- Salvesta check-in -->
-      <ion-button @click="saveCheckIn" :disabled="!selectedPlace">Salvesta Check-in</ion-button>
+      <ion-button @click="saveCheckIn" :disabled="!canSaveCheckIn">Salvesta Check-in</ion-button>
     </ion-content>
   </ion-page>
 </template>
@@ -48,7 +59,7 @@
 import {
   IonPage, IonHeader, IonToolbar, IonTitle, IonContent,
   IonButtons, IonMenuButton, IonButton, IonInput, IonTextarea,
-  IonSearchbar, IonLabel, IonSelect, IonSelectOption
+  IonSearchbar, IonLabel, IonSelect, IonSelectOption, IonItem, IonToggle
 } from '@ionic/vue';
 
 import { Capacitor } from '@capacitor/core';
@@ -56,7 +67,8 @@ import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 import { Filesystem, Directory } from '@capacitor/filesystem';
 import { Geolocation } from '@capacitor/geolocation';
 import { useRouter } from 'vue-router';
-import { ref, onMounted, watch } from 'vue';
+import { ref, onMounted, watch, computed } from 'vue';
+import { alertController } from '@ionic/vue';
 
 const router = useRouter();
 
@@ -70,6 +82,11 @@ const places = ref<any[]>([]);
 const searchQuery = ref('');
 const filteredPlaces = ref<any[]>([]);
 const selectedPlace = ref<any>(null);
+
+// Käsitsi lisamine
+const manualEntryActive = ref(false);
+const manualPlaceName = ref('');
+const manualPlaceType = ref('');
 
 // Kaamera avamine
 const openCamera = async () => {
@@ -143,9 +160,18 @@ watch(searchQuery, (newQuery) => {
 });
 
 // Salvesta check-in
-const saveCheckIn = () => {
+const saveCheckIn = async () => {
+  const place = manualEntryActive.value
+  ? {
+      name: manualPlaceName.value.trim(),
+      type: manualPlaceType.value.trim() || 'Määramata',
+      lat: null,
+      lng: null,
+    }
+  : selectedPlace.value;
+
   const checkIn = {
-    place: selectedPlace.value,
+    place,
     photo: photoUrl.value,
     mood: mood.value,
     drinks: drinks.value,
@@ -163,5 +189,26 @@ const saveCheckIn = () => {
   notes.value = '';
   photoUrl.value = '';
   selectedPlace.value = null;
+  manualPlaceName.value = '';
+  manualPlaceType.value = '';
+  manualEntryActive.value = false;
+
+  // Näita kinnitust
+  await showAlert();
+};
+
+const canSaveCheckIn = computed(() => {
+  return manualEntryActive.value
+    ? manualPlaceName.value.trim().length > 0
+    : selectedPlace.value !== null;
+});
+
+const showAlert = async () => {
+  const alert = await alertController.create({
+    header: 'Check-in salvestatud',
+    message: 'Sinu külastus on lisatud sinu profiili alla.',
+    buttons: ['OK'],
+  });
+  await alert.present();
 };
 </script>
