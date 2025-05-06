@@ -6,6 +6,7 @@ import { IonicVue } from '@ionic/vue';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 
+import { Capacitor } from '@capacitor/core';
 import { StatusBar, Style } from '@capacitor/status-bar';
 
 L.Icon.Default.mergeOptions({
@@ -43,9 +44,11 @@ import '@ionic/vue/css/palettes/dark.always.css';
 /* Theme variables */
 import './theme/variables.css';
 
-StatusBar.setOverlaysWebView({ overlay: false });
-StatusBar.setBackgroundColor({ color: '#121212' });
-StatusBar.setStyle({ style: Style.Dark });
+if (Capacitor.getPlatform() !== 'web') {
+  StatusBar.setOverlaysWebView({ overlay: false });
+  StatusBar.setBackgroundColor({ color: '#121212' });
+  StatusBar.setStyle({ style: Style.Dark });
+}
 
 const app = createApp(App)
   .use(IonicVue)
