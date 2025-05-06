@@ -100,7 +100,7 @@ const openCamera = async () => {
       source: CameraSource.Camera,
       resultType: CameraResultType.Base64,
       quality: 90,
-      saveToGallery: true,
+      saveToGallery: false,
     });
 
     const fileName = `photo_${Date.now()}.jpeg`;
