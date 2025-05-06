@@ -96,34 +96,18 @@ const manualPlaceType = ref('');
 // Kaamera avamine
 const openCamera = async () => {
   try {
-    const platform = Capacitor.getPlatform();
-
-    if (platform === 'ios') {
-      const photo = await Camera.getPhoto({
-        source: CameraSource.Camera,
-        resultType: CameraResultType.Uri,
-        quality: 90,
-        saveToGallery: true,
-      });
-      photoUrl.value = photo.webPath || '';
-    } else {
-      const photo = await Camera.getPhoto({
-        source: CameraSource.Camera,
-        resultType: CameraResultType.Base64,
-        quality: 90,
-      });
-      const fileName = `photo_${Date.now()}.jpeg`;
-      const savedFile = await Filesystem.writeFile({
-        path: fileName,
-        data: photo.base64String!,
-        directory: Directory.Documents,
-      });
-      photoUrl.value = savedFile.uri;
-    }
+    const photo = await Camera.getPhoto({
+      source: CameraSource.Camera,
+      resultType: CameraResultType.Uri,
+      quality: 90,
+      saveToGallery: true,
+    });
+    photoUrl.value = photo.webPath || '';
   } catch (error) {
     console.error('Kaamera viga:', error);
   }
 };
+
 
 // AR vaate avamine
 const goToAR = () => {
