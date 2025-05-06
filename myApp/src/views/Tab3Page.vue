@@ -98,16 +98,32 @@ const openCamera = async () => {
   try {
     const photo = await Camera.getPhoto({
       source: CameraSource.Camera,
-      resultType: CameraResultType.Uri,
+      resultType: CameraResultType.Base64,
       quality: 90,
       saveToGallery: true,
     });
-    photoUrl.value = photo.webPath || '';
+
+    const fileName = `photo_${Date.now()}.jpeg`;
+
+    // Salvestame seadmesse
+    await Filesystem.writeFile({
+      path: fileName,
+      data: photo.base64String!,
+      directory: Directory.Data,
+    });
+
+    // Hangi konverteeritud tee, mida saab <img src="..."> kasutada
+    const fileUri = await Filesystem.getUri({
+      path: fileName,
+      directory: Directory.Data,
+    });
+
+    const webPath = Capacitor.convertFileSrc(fileUri.uri);
+    photoUrl.value = webPath; // SEE väärtus salvestatakse check-in objekti
   } catch (error) {
-    console.error('Kaamera viga:', error);
+    console.error('Kaamera või salvestamise viga:', error);
   }
 };
-
 
 // AR vaate avamine
 const goToAR = () => {
