@@ -16,22 +16,17 @@
       <ion-button @click="goToAR" class="ar-camera-button">Ava AR kaamera</ion-button>
 
       <!-- Otsing ja rippmenüü kohtade jaoks -->
-      <ion-searchbar
-        v-model="searchQuery"
-        debounce="300"
-        placeholder="Otsi baare või klubisid"
-      ></ion-searchbar>
+      <div class="search-wrapper">
+          <ion-searchbar v-model="searchQuery" debounce="300" placeholder="Otsi baare või klubisid"></ion-searchbar>
 
-      <ion-label>Vali koht check-in'iks:</ion-label>
-      <ion-select v-model="selectedPlace" placeholder="Vali koht" :disabled="manualEntryActive">
-        <ion-select-option
-          v-for="(place, index) in filteredPlaces"
-          :key="index"
-          :value="place"
-        >
-          {{ place.name }} - {{ place.type }}
-        </ion-select-option>
-      </ion-select>
+          <ion-list v-if="showResults && filteredPlaces.length && !manualEntryActive" class="search-results-list">
+            <ion-item v-for="(place, index) in filteredPlaces" :key="'result-' + index" button
+              @click="selectPlace(place)">
+              {{ place.name }}
+              <ion-note slot="end">{{ place.type }}</ion-note>
+            </ion-item>
+          </ion-list>
+      </div>
 
       <!-- Või lisa uus koht käsitsi -->
       <ion-item lines="none">
@@ -59,8 +54,8 @@
 import {
   IonPage, IonHeader, IonToolbar, IonTitle, IonContent,
   IonButtons, IonMenuButton, IonButton, IonInput, IonTextarea,
-  IonSearchbar, IonLabel, IonSelect, IonSelectOption, IonItem, IonToggle,
-  onIonViewWillEnter, alertController
+  IonSearchbar, IonLabel, IonItem, IonToggle,
+  onIonViewWillEnter, alertController, IonList
 } from '@ionic/vue';
 
 import { Capacitor } from '@capacitor/core';
@@ -68,7 +63,7 @@ import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 import { Filesystem, Directory } from '@capacitor/filesystem';
 import { Geolocation } from '@capacitor/geolocation';
 import { useRouter, useRoute } from 'vue-router';
-import { ref, watch, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 
 import { fetchPlaces } from '../script/places';
 
@@ -87,13 +82,34 @@ const photoUrl = ref('');
 // Kohtade ja otsingu muutujad
 const places = ref<any[]>([]);
 const searchQuery = ref('');
-const filteredPlaces = ref<any[]>([]);
+
 const selectedPlace = ref<any>(null);
+const showResults = ref(false);
 
 // Käsitsi lisamine
 const manualEntryActive = ref(false);
 const manualPlaceName = ref('');
 const manualPlaceType = ref('');
+
+watch(searchQuery, (newQuery) => {
+  showResults.value = !!newQuery.trim();
+});
+
+const selectPlace = (place: any) => {
+  selectedPlace.value = place;
+  searchQuery.value = place.name;
+  showResults.value = false;
+};
+
+const filteredPlaces = computed(() => {
+  const query = searchQuery.value.toLowerCase();
+  if (!query) return places.value;
+  return places.value.filter(place =>
+    place.name.toLowerCase().includes(query) ||
+    place.type.toLowerCase().includes(query)
+  );
+});
+
 
 // Kaamera avamine
 const openCamera = async () => {
@@ -143,8 +159,9 @@ const preselectPlaceFromQuery = () => {
     );
     if (match) {
       selectedPlace.value = match;
+      searchQuery.value = match.name;  // Täida otsinguväli koha nimega
     } else {
-      // Kui ei leitud automaatselt sobivat kohta, lisa käsitsi
+      // Kui ei leitud sobivat kohta, siis lisa käsitsi
       manualEntryActive.value = true;
       manualPlaceName.value = name;
       manualPlaceType.value = type;
@@ -167,23 +184,11 @@ onIonViewWillEnter(async () => {
     // Küsi ümbruskonna baarid ja klubid Overpass API kaudu
     places.value = await fetchPlaces(lat, lng); // Kasutame fetchPlaces funktsiooni
 
-    filteredPlaces.value = places.value;
-
     // Kontrolli, kas bucketlistist tuli automaatne valik
     preselectPlaceFromQuery();
   } catch (error) {
     console.error('Geolocation või API viga:', error);
   }
-});
-
-
-// Otsingu jälgimine
-watch(searchQuery, (newQuery) => {
-  const query = newQuery.toLowerCase();
-  filteredPlaces.value = places.value.filter(place =>
-    place.name.toLowerCase().includes(query) ||
-    place.type.toLowerCase().includes(query)
-  );
 });
 
 // Salvesta check-in
@@ -223,7 +228,7 @@ const saveCheckIn = async () => {
       localStorage.setItem('bucketlist', JSON.stringify(bucketItems.value)); // Uuenda 'localStorage'
     }
   }
-  
+
   // Tühjenda väljad
   mood.value = '';
   drinks.value = '';
@@ -255,3 +260,22 @@ const showAlert = async () => {
   await alert.present();
 };
 </script>
+
+<style>
+.search-wrapper {
+  position: relative;
+}
+
+.search-results-list {
+  position: absolute;
+  top: 48px;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  max-height: 200px;
+  overflow-y: auto;
+  border: 1px solid #000000;
+  border-radius: 4px;
+}
+
+</style>

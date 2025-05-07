@@ -11,7 +11,7 @@
 
     <ion-content class="ion-padding">
       <!-- Otsing -->
-      <ion-input v-model="searchQuery" placeholder="Otsi baari või klubi" debounce="300" clearInput></ion-input>
+      <ion-searchbar v-model="searchQuery" placeholder="Otsi baari või klubi" debounce="300" clearInput></ion-searchbar>
 
       <div style="position: relative; height: 75vh; width: 100%;">
         <!-- Kaart -->
@@ -54,7 +54,7 @@
 <script setup lang="ts">
 import {
   IonPage, IonHeader, IonToolbar, IonTitle, IonContent,
-  IonButtons, IonMenuButton, IonInput, IonItem, IonList, IonNote, IonButton, onIonViewWillEnter
+  IonButtons, IonMenuButton, IonItem, IonList, IonNote, IonButton, onIonViewWillEnter, IonSearchbar
 } from '@ionic/vue';
 
 import { LMap, LTileLayer, LMarker, LPopup, LCircle } from '@vue-leaflet/vue-leaflet';
