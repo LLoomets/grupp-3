@@ -116,7 +116,7 @@ const openCamera = async () => {
       source: CameraSource.Camera,
       resultType: CameraResultType.Base64,
       quality: 90,
-      saveToGallery: false,
+      saveToGallery: true,
     });
 
     const fileName = `photo_${Date.now()}.jpeg`;
@@ -128,7 +128,6 @@ const openCamera = async () => {
       directory: Directory.Data,
     });
 
-    // Hangi konverteeritud tee, mida saab <img src="..."> kasutada
     const fileUri = await Filesystem.getUri({
       path: fileName,
       directory: Directory.Data,
