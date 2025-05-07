@@ -114,32 +114,16 @@ const openCamera = async () => {
   try {
     const photo = await Camera.getPhoto({
       source: CameraSource.Camera,
-      resultType: CameraResultType.Base64,
+      resultType: CameraResultType.Uri,
       quality: 90,
       saveToGallery: true,
     });
 
-    const fileName = `photo_${Date.now()}.jpeg`;
+    photoUrl.value = photo.webPath!;
 
-    // Salvestame seadmesse
-    await Filesystem.writeFile({
-      path: fileName,
-      data: photo.base64String!,
-      directory: Directory.Data,
-    });
-
-    const fileUri = await Filesystem.getUri({
-      path: fileName,
-      directory: Directory.Data,
-    });
-
-    const webPath = Capacitor.convertFileSrc(fileUri.uri);
-    photoUrl.value = webPath;
-
-    // 🔄 Salvesta viide localStorage'i
-    localStorage.setItem('lastPhotoUrl', webPath);
+    localStorage.setItem('lastPhotoUrl', photo.webPath!);
   } catch (error) {
-    console.error('Kaamera või salvestamise viga:', error);
+    console.error('Kaamera viga:', error);
   }
 };
 
@@ -172,19 +156,17 @@ const preselectPlaceFromQuery = () => {
 // Kohtade laadimine vaate avamisel
 onIonViewWillEnter(async () => {
   try {
-    // Hangi asukoht
     const position = await Geolocation.getCurrentPosition({
       enableHighAccuracy: true,
       timeout: 15000,
       maximumAge: 0
     });
+
     const lat = position.coords.latitude;
     const lng = position.coords.longitude;
 
-    // Lae kohad
     places.value = await fetchPlaces(lat, lng);
 
-    // Kontrolli bucketlisti valikut
     preselectPlaceFromQuery();
 
     const savedPhotoUrl = localStorage.getItem('lastPhotoUrl');
@@ -222,7 +204,6 @@ const saveCheckIn = async () => {
   activityFeed.push(checkIn);
   localStorage.setItem('activityFeed', JSON.stringify(activityFeed));
 
-  // Uuenda bucketlisti
   if (selectedPlace.value) {
     const index = bucketItems.value.findIndex(
       (i) => i.name === selectedPlace.value.name && i.type === selectedPlace.value.type
@@ -233,7 +214,6 @@ const saveCheckIn = async () => {
     }
   }
 
-  // Tühjenda väljad
   mood.value = '';
   drinks.value = '';
   notes.value = '';
