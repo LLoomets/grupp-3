@@ -70,6 +70,8 @@ import { Geolocation } from '@capacitor/geolocation';
 import { useRouter, useRoute } from 'vue-router';
 import { ref, watch, computed } from 'vue';
 
+import { fetchPlaces } from '../script/places';
+
 // Bucket list muudatused
 const bucketItems = ref<any[]>(JSON.parse(localStorage.getItem('bucketlist') || '[]'));
 
@@ -163,18 +165,7 @@ onIonViewWillEnter(async () => {
     const lng = position.coords.longitude;
 
     // Küsi ümbruskonna baarid ja klubid Overpass API kaudu
-    const overpassUrl = `https://overpass-api.de/api/interpreter?data=[out:json];node[amenity~"bar|nightclub"](around:3000,${lat},${lng});out;`;
-
-    const response = await fetch(overpassUrl);
-    const data = await response.json();
-
-    // Salvesta kohtade andmed
-    places.value = data.elements.map((el: any) => ({
-      name: el.tags?.name || 'Tundmatu koht',
-      type: el.tags?.amenity || 'Tundmatu',
-      lat: el.lat,
-      lng: el.lon,
-    }));
+    places.value = await fetchPlaces(lat, lng); // Kasutame fetchPlaces funktsiooni
 
     filteredPlaces.value = places.value;
 
@@ -184,6 +175,7 @@ onIonViewWillEnter(async () => {
     console.error('Geolocation või API viga:', error);
   }
 });
+
 
 // Otsingu jälgimine
 watch(searchQuery, (newQuery) => {
@@ -199,11 +191,11 @@ const saveCheckIn = async () => {
   // Koht vastavalt valikule või käsitsi sisestusele
   const place = manualEntryActive.value
     ? {
-        name: manualPlaceName.value.trim(),
-        type: manualPlaceType.value.trim() || 'Määramata',
-        lat: null,
-        lng: null,
-      }
+      name: manualPlaceName.value.trim(),
+      type: manualPlaceType.value.trim() || 'Määramata',
+      lat: null,
+      lng: null,
+    }
     : selectedPlace.value;
 
   // Koosta check-in objekt
@@ -217,7 +209,7 @@ const saveCheckIn = async () => {
   };
 
   // Salvesta localStorage'i
-  let activityFeed = JSON.parse(localStorage.getItem('activityFeed') || '[]');
+  const activityFeed = JSON.parse(localStorage.getItem('activityFeed') || '[]');
   activityFeed.push(checkIn);
   localStorage.setItem('activityFeed', JSON.stringify(activityFeed));
 

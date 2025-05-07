@@ -52,14 +52,15 @@
 <script setup lang="ts">
 import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonButtons, IonMenuButton, IonSpinner, IonList, IonItem, IonLabel, onIonViewWillEnter } from '@ionic/vue';
 import { ref, computed } from 'vue';
-import { Geolocation } from '@capacitor/geolocation';
 import { useRouter } from 'vue-router';
+import { fetchPlaces, getUserLocation } from '../script/places'; 
+
+const places = ref<any[]>([]); 
+const suggestedPlace = ref<any>(null); 
+const loading = ref(true); 
+const activityFeed = ref<any[]>([]);
 
 const router = useRouter();
-
-const suggestedPlace = ref<any>(null);
-const loading = ref(true);
-const activityFeed = ref<any[]>([]);
 
 // Arvutatud väärtus: 3 kõige uuemat check-in’i
 const latestCheckIns = computed(() => {
@@ -70,51 +71,27 @@ const latestCheckIns = computed(() => {
 });
 
 function goToProfile(checkIn: any) {
-  // Edastame check-in'i andmed koos highlight väärtusega
   router.push({ path: '/tabs/tab5', query: { checkIn: JSON.stringify(checkIn), highlight: 'true' } });
 }
 
 onIonViewWillEnter(async () => {
   try {
-    const position = await Geolocation.getCurrentPosition();
-    const lat = position.coords.latitude;
-    const lng = position.coords.longitude;
+    const location = await getUserLocation();
+    if (location) {
+      const [lat, lng] = location;
+      places.value = await fetchPlaces(lat, lng); 
 
-    const overpassUrl = `https://overpass-api.de/api/interpreter?data=[out:json];node[amenity~"bar|nightclub"](around:3000,${lat},${lng});out;`;
+      const knownPlaces = places.value.filter((p: any) => p.name !== 'Tundmatu koht');
 
-    const response = await fetch(overpassUrl);
-    const data = await response.json();
-
-    const places = data.elements.map((el: any) => {
-      const tags = el.tags || {};
-      const addressParts = [];
-
-      if (tags['addr:street']) addressParts.push(tags['addr:street']);
-      if (tags['addr:housenumber']) addressParts.push(tags['addr:housenumber']);
-      if (tags['addr:city']) addressParts.push(tags['addr:city']);
-
-      const address = addressParts.join(', ');
-
-      return {
-        name: tags.name || 'Tundmatu koht',
-        type: tags.amenity || 'Tundmatu',
-        address: address || 'Aadress puudub',
-        lat: el.lat,
-        lng: el.lon,
-      };
-    });
-
-    const knownPlaces = places.filter((p: any) => p.name !== 'Tundmatu koht');
-
-    if (knownPlaces.length > 0) {
-      const randomIndex = Math.floor(Math.random() * knownPlaces.length);
-      suggestedPlace.value = knownPlaces[randomIndex];
+      if (knownPlaces.length > 0) {
+        const randomIndex = Math.floor(Math.random() * knownPlaces.length);
+        suggestedPlace.value = knownPlaces[randomIndex]; 
+      }
     }
-
   } catch (error) {
-    console.error('Soovitatud koha toomisel tekkis viga:', error);
+    console.error('Kohtade laadimisel tekkis viga:', error);
   } finally {
-    loading.value = false;
+    loading.value = false; 
   }
 
   // Laeme activityFeed localStorage’ist
@@ -128,3 +105,4 @@ onIonViewWillEnter(async () => {
   }
 });
 </script>
+
