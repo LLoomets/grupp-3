@@ -60,14 +60,20 @@ const removeItem = (index: number) => {
 // Liikumine tab 3-le, kui check-in nuppule vajutatakse
 const router = useRouter();
 const goToTab3 = (item: any, index: number) => {
+  // Kontrollige, kas item sisaldab kõiki vajalikke andmeid
+  console.log('Valitud koht bucket listist: ', item);
+
   // Kui check-in ei ole pooleli, siis märgi see pooleli ja suuna tab3-le
   if (!item.isCheckingIn) {
     bucketItems.value[index].isCheckingIn = true;
     localStorage.setItem('bucketlist', JSON.stringify(bucketItems.value));
   }
 
-  // Suuna tab3-le
-  router.push({ path: '/tabs/tab3', query: { name: item.name, type: item.type } });
+  // Suunda tab3-le, edastades valitud koha andmed query kaudu
+  router.push({
+    path: '/tabs/tab3',
+    query: { name: item.name, type: item.type }
+  });
 };
 
 // Lae bucket list, kui komponent on montaažitud
