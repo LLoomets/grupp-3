@@ -58,9 +58,11 @@ import {
 } from '@ionic/vue';
 
 import { LMap, LTileLayer, LMarker, LPopup, LCircle } from '@vue-leaflet/vue-leaflet';
-import { Geolocation } from '@capacitor/geolocation';
+//import { Geolocation } from '@capacitor/geolocation';
 import { ref, computed, watch } from 'vue';
 import L from 'leaflet';
+
+import { fetchPlaces, getUserLocation } from '../script/places';
 
 // Kohandatud punane marker
 const userIcon = L.icon({
@@ -99,32 +101,14 @@ const filteredPlaces = computed(() => {
 });
 
 onIonViewWillEnter(async () => {
-  try {
-    const position = await Geolocation.getCurrentPosition({
-      enableHighAccuracy: true,
-      timeout: 15000,
-      maximumAge: 0
-    });
-    const lat = position.coords.latitude;
-    const lng = position.coords.longitude;
-
+  const location = await getUserLocation();
+  if (location) {
+    const [lat, lng] = location;
     userLocation.value = [lat, lng];
     mapCenter.value = [lat, lng];
 
-    // Overpass API päring baaride ja klubide leidmiseks 3km raadiuses
-    const overpassUrl = `https://overpass-api.de/api/interpreter?data=[out:json];node[amenity~"bar|nightclub"](around:3000,${lat},${lng});out;`;
-
-    const response = await fetch(overpassUrl);
-    const data = await response.json();
-
-    places.value = data.elements.map((el: any) => ({
-      name: el.tags?.name || 'Tundmatu koht',
-      type: el.tags?.amenity || 'Tundmatu',
-      lat: el.lat,
-      lng: el.lon,
-    }));
-  } catch (error) {
-    console.error('Geolocation error:', error);
+    // Hangi kohad places.ts kaudu
+    places.value = await fetchPlaces(lat, lng);
   }
 });
 
