@@ -114,18 +114,23 @@ const openCamera = async () => {
   try {
     const photo = await Camera.getPhoto({
       source: CameraSource.Camera,
-      resultType: CameraResultType.Uri,
+      resultType: CameraResultType.Base64,
       quality: 90,
-      saveToGallery: true,
     });
 
-    photoUrl.value = photo.webPath!;
+    // Muudame base64 stringi vaadatavaks data:image/jpeg;base64,... kujul
+    const fullDataUrl = `data:image/jpeg;base64,${photo.base64String}`;
 
-    localStorage.setItem('lastPhotoUrl', photo.webPath!);
+    photoUrl.value = fullDataUrl;
+
+    // Salvesta localStorage'i
+    localStorage.setItem('lastPhotoBase64', fullDataUrl);
   } catch (error) {
     console.error('Kaamera viga:', error);
   }
 };
+
+
 
 // AR vaate avamine
 const goToAR = () => {
@@ -166,12 +171,12 @@ onIonViewWillEnter(async () => {
     const lng = position.coords.longitude;
 
     places.value = await fetchPlaces(lat, lng);
-
     preselectPlaceFromQuery();
 
-    const savedPhotoUrl = localStorage.getItem('lastPhotoUrl');
-    if (savedPhotoUrl) {
-      photoUrl.value = savedPhotoUrl;
+    // Lae base64 dataURL localStorage'ist
+    const savedPhoto = localStorage.getItem('lastPhotoBase64');
+    if (savedPhoto) {
+      photoUrl.value = savedPhoto;
     }
 
   } catch (error) {
@@ -193,7 +198,7 @@ const saveCheckIn = async () => {
 
   const checkIn = {
     place,
-    photo: photoUrl.value,
+    photo: photoUrl.value, // base64 data:image/... string
     mood: mood.value,
     drinks: drinks.value,
     notes: notes.value,
@@ -218,7 +223,7 @@ const saveCheckIn = async () => {
   drinks.value = '';
   notes.value = '';
   photoUrl.value = '';
-  localStorage.removeItem('lastPhotoUrl');
+  localStorage.removeItem('lastPhotoBase64');
   selectedPlace.value = null;
   manualPlaceName.value = '';
   manualPlaceType.value = '';
