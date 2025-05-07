@@ -59,12 +59,25 @@
           style="margin-bottom: 20px;"
         >
           <ion-label class="checkin-label">
-            <h3 class="checkin-title">Check-in @ {{ checkIn.place?.name || 'Tundmatu koht' }}</h3>
-            <p v-if="checkIn.visitDate"><strong>Kuupäev:</strong> {{ checkIn.visitDate }}</p>
-            <p v-if="checkIn.mood"><strong>Tuju:</strong> {{ checkIn.mood }}</p>
-            <p v-if="checkIn.drinks"><strong>Joogid:</strong> {{ checkIn.drinks }}</p>
-            <p v-if="checkIn.notes"><strong>Märkmed:</strong> {{ checkIn.notes }}</p>
-            
+            <div class="checkin-text-with-button">
+              <div>
+                <h3 class="checkin-title">Check-in @ {{ checkIn.place?.name || 'Tundmatu koht' }}</h3>
+                <p v-if="checkIn.visitDate"><strong>Kuupäev:</strong> {{ checkIn.visitDate }}</p>
+                <p v-if="checkIn.mood"><strong>Tuju:</strong> {{ checkIn.mood }}</p>
+                <p v-if="checkIn.drinks"><strong>Joogid:</strong> {{ checkIn.drinks }}</p>
+                <p v-if="checkIn.notes"><strong>Märkmed:</strong> {{ checkIn.notes }}</p>
+              </div>
+              <ion-button 
+                color="danger" 
+                fill="clear" 
+                size="small" 
+                class="delete-button" 
+                @click.stop="deleteCheckIn(index)"
+              >
+                ✕
+              </ion-button>
+            </div>
+
             <img 
               v-if="checkIn.photo" 
               :src="checkIn.photo" 
@@ -149,6 +162,15 @@ const placeFrequency = computed(() => {
     .sort((a, b) => b[1] - a[1])
     .slice(0, 3);
 });
+
+const deleteCheckIn = (index: number) => {
+  const confirmed = window.confirm('Kas soovid selle check-in\'i kustutada?');
+  if (!confirmed) return;
+
+  activityFeed.value.splice(index, 1);
+  localStorage.setItem('activityFeed', JSON.stringify(activityFeed.value));
+};
+
 </script>
 
 <style scoped>
@@ -219,6 +241,22 @@ checkin-card {
   font-weight: 600;
   margin-bottom: 4px;
   color: var(--ion-color-primary);
+}
+
+.checkin-text-with-button {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.delete-button {
+  font-size: 1.2rem;
+  margin-left: auto;
+  --padding-start: 0;
+  --padding-end: 0;
+  --background-hover: transparent;
 }
 
 .checkin-photo {
