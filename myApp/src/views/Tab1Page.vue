@@ -15,20 +15,43 @@
     </ion-header>
 
     <ion-content class="ion-padding">
-      <h2>Tere tulemast!</h2>
-      <p>Siin saad avastada erinevaid baare ja klubisid.</p>
+      <!-- Päeva tarkus kast -->
+      <ion-grid>
+        <ion-row>
+          <ion-col size="12">
+            <ion-card class="stat-card dark-card">
+              <ion-card-header>
+                <ion-card-title class="stats-title">🍻 Päeva tarkus</ion-card-title>
+              </ion-card-header>
+              <ion-card-content>
+                <p class="large-text">{{ todayQuote }}</p>
+              </ion-card-content>
+            </ion-card>
+          </ion-col>
+        </ion-row>
+
+        <ion-row v-if="suggestedPlace" style="margin-top: 10px;">
+          <ion-col size="12">
+            <ion-card class="stat-card dark-card">
+              <ion-card-header>
+                <ion-card-title class="stats-title">✨ Soovitatud koht</ion-card-title>
+              </ion-card-header>
+              <ion-card-content>
+                <p class="large-text"><strong>{{ suggestedPlace.name }}</strong> – {{ suggestedPlace.type }}</p>
+                <p class="large-text" v-if="suggestedPlace.address">📍 {{ suggestedPlace.address }}</p>
+              </ion-card-content>
+            </ion-card>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
 
       <div v-if="loading" style="margin-top: 20px;">
         <ion-spinner name="dots"></ion-spinner>
       </div>
 
-      <div v-else-if="suggestedPlace" style="margin-top: 20px;">
-        <h3>✨ Soovitatud koht</h3>
-        <p><strong>{{ suggestedPlace.name }}</strong> – {{ suggestedPlace.type }}</p>
-        <p v-if="suggestedPlace.address">📍 {{ suggestedPlace.address }}</p>
-      </div>
 
-      <div v-if="latestCheckIns.length > 0">
+      <!-- Viimased külastused -->
+      <div v-if="latestCheckIns.length > 0" style="margin-top: 40px;">
         <h3>Viimased külastused</h3>
         <ion-list lines="none">
           <ion-item
@@ -61,7 +84,6 @@
   </ion-page>
 </template>
 
-
 <script setup lang="ts">
 import {
   IonPage,
@@ -75,17 +97,25 @@ import {
   IonList,
   IonItem,
   IonLabel,
+  IonCard,
+  IonCardHeader,
+  IonCardTitle,
+  IonCardContent,
+  IonGrid,
+  IonRow,
+  IonCol,
   onIonViewWillEnter
 } from '@ionic/vue';
 import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
-import { fetchPlaces, getUserLocation } from '../script/places'; 
+import { fetchPlaces, getUserLocation } from '../script/places';
+import { quotes } from '../data/quotes'; // Import quotes
 
-const places = ref<any[]>([]); 
-const suggestedPlace = ref<any>(null); 
-const loading = ref(true); 
+const places = ref<any[]>([]);
+const suggestedPlace = ref<any>(null);
+const loading = ref(true);
 const activityFeed = ref<any[]>([]);
-
+const todayQuote = ref<string>('');
 const router = useRouter();
 
 // Arvutatud väärtus: 3 kõige uuemat check-in’i
@@ -100,24 +130,33 @@ function goToProfile(checkIn: any) {
   router.push({ path: '/tabs/tab5', query: { checkIn: JSON.stringify(checkIn), highlight: 'true' } });
 }
 
+// Juhuslik tsitaadi valimine
+function getQuoteOfTheDay() {
+  const today = new Date();
+  const dayIndex = today.getFullYear() * 365 + today.getMonth() * 31 + today.getDate(); // piisavalt varieeruv
+  const quoteIndex = dayIndex % quotes.length;
+  todayQuote.value = quotes[quoteIndex];
+}
+
+
 onIonViewWillEnter(async () => {
   try {
     const location = await getUserLocation();
     if (location) {
       const [lat, lng] = location;
-      places.value = await fetchPlaces(lat, lng); 
+      places.value = await fetchPlaces(lat, lng);
 
       const knownPlaces = places.value.filter((p: any) => p.name !== 'Tundmatu koht');
 
       if (knownPlaces.length > 0) {
         const randomIndex = Math.floor(Math.random() * knownPlaces.length);
-        suggestedPlace.value = knownPlaces[randomIndex]; 
+        suggestedPlace.value = knownPlaces[randomIndex];
       }
     }
   } catch (error) {
     console.error('Kohtade laadimisel tekkis viga:', error);
   } finally {
-    loading.value = false; 
+    loading.value = false;
   }
 
   // Laeme activityFeed localStorage’ist
@@ -129,9 +168,11 @@ onIonViewWillEnter(async () => {
       console.error('Vigane activityFeed JSON:', error);
     }
   }
+
+  // Juhusliku tsitaadi valimine
+  getQuoteOfTheDay();
 });
 </script>
-
 
 <style scoped>
 .checkin-title {
@@ -156,5 +197,29 @@ onIonViewWillEnter(async () => {
   margin-top: 10px;
   border-radius: 12px;
   object-fit: cover;
+}
+
+.stat-card {
+  margin: 4px 0;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 12px;
+  background-color: #1e1e1e;
+  color: #ffffff;
+}
+
+.stats-title {
+  font-size: 1.4rem;
+  font-weight: bold;
+}
+
+.dark-card {
+  --background: #1e1e1e;
+  --color: #ffffff;
+}
+
+.large-text {
+  font-size: 1.1rem; /* Suurendab teksti suurust */
+  line-height: 1.6;
 }
 </style>
