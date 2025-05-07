@@ -29,18 +29,30 @@
       </div>
 
       <div v-if="latestCheckIns.length > 0">
-        <h3>Viimased Check-in'id</h3>
-        <ion-list>
+        <h3>Viimased külastused</h3>
+        <ion-list lines="none">
           <ion-item
             v-for="(checkIn, index) in latestCheckIns"
             :key="index"
             button
             @click="goToProfile(checkIn)"
           >
-            <ion-label>
-              <h2>Check-in @ {{ checkIn.place?.name || 'Tundmatu koht' }}</h2>
-              <p>{{ checkIn.visitDate }}</p>
-              <img :src="checkIn.photo" alt="Check-in photo" style="width: 100px; height: 100px; object-fit: cover;" />
+            <ion-label class="checkin-label">
+              <div class="checkin-text-with-button">
+                <div>
+                  <h3 class="checkin-title">Check-in @ {{ checkIn.place?.name || 'Tundmatu koht' }}</h3>
+                  <p v-if="checkIn.visitDate"><strong>Kuupäev:</strong> {{ checkIn.visitDate }}</p>
+                  <p v-if="checkIn.mood"><strong>Tuju:</strong> {{ checkIn.mood }}</p>
+                  <p v-if="checkIn.drinks"><strong>Joogid:</strong> {{ checkIn.drinks }}</p>
+                  <p v-if="checkIn.notes"><strong>Märkmed:</strong> {{ checkIn.notes }}</p>
+                </div>
+              </div>
+              <img
+                v-if="checkIn.photo"
+                :src="checkIn.photo"
+                alt="Check-in photo"
+                class="checkin-photo"
+              />
             </ion-label>
           </ion-item>
         </ion-list>
@@ -49,8 +61,22 @@
   </ion-page>
 </template>
 
+
 <script setup lang="ts">
-import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonButtons, IonMenuButton, IonSpinner, IonList, IonItem, IonLabel, onIonViewWillEnter } from '@ionic/vue';
+import {
+  IonPage,
+  IonHeader,
+  IonToolbar,
+  IonTitle,
+  IonContent,
+  IonButtons,
+  IonMenuButton,
+  IonSpinner,
+  IonList,
+  IonItem,
+  IonLabel,
+  onIonViewWillEnter
+} from '@ionic/vue';
 import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { fetchPlaces, getUserLocation } from '../script/places'; 
@@ -106,3 +132,29 @@ onIonViewWillEnter(async () => {
 });
 </script>
 
+
+<style scoped>
+.checkin-title {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 4px;
+  color: var(--ion-color-primary);
+}
+
+.checkin-text-with-button {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.checkin-photo {
+  width: 100%;
+  height: auto;
+  max-height: 300px;
+  margin-top: 10px;
+  border-radius: 12px;
+  object-fit: cover;
+}
+</style>
