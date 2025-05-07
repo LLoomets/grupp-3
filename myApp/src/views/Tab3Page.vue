@@ -10,29 +10,25 @@
     </ion-header>
 
     <ion-content class="ion-padding">
-      <!-- Ava kaamera - tavaline foto -->
-      <ion-button @click="openCamera" class="camera-button">Ava kaamera - tavaline foto</ion-button>
-      <!-- Ava AR kaamera -->
+
       <ion-button @click="goToAR" class="ar-camera-button">Ava AR kaamera</ion-button>
 
       <!-- Otsing ja rippmenüü kohtade jaoks -->
       <div class="search-wrapper">
-          <ion-searchbar v-model="searchQuery" debounce="300" placeholder="Otsi baare või klubisid"></ion-searchbar>
+        <ion-searchbar v-model="searchQuery" debounce="300" placeholder="Otsi baare või klubisid"></ion-searchbar>
 
-          <ion-list v-if="showResults && filteredPlaces.length && !manualEntryActive" class="search-results-list">
-            <ion-item v-for="(place, index) in filteredPlaces" :key="'result-' + index" button
-              @click="selectPlace(place)">
-              {{ place.name }}
-              <ion-note slot="end">{{ place.type }}</ion-note>
-            </ion-item>
-          </ion-list>
+        <ion-list v-if="showResults && filteredPlaces.length && !manualEntryActive" class="search-results-list">
+          <ion-item v-for="(place, index) in filteredPlaces" :key="'result-' + index" button
+            @click="selectPlace(place)">
+            {{ place.name }}
+            <ion-note slot="end">{{ place.type }}</ion-note>
+          </ion-item>
+        </ion-list>
       </div>
 
       <!-- Või lisa uus koht käsitsi -->
-      <ion-item lines="none">
         <ion-label>Ei leidnud sobivat? </ion-label>
         <ion-toggle v-model="manualEntryActive">Lisa koht käsitsi</ion-toggle>
-      </ion-item>
 
       <div v-if="manualEntryActive" class="manual-entry">
         <ion-input v-model="manualPlaceName" placeholder="Koha nimi" />
@@ -44,8 +40,10 @@
       <ion-input v-model="drinks" placeholder="Mis jooke jõid?" />
       <ion-textarea v-model="notes" placeholder="Lisa märkmeid"></ion-textarea>
 
+      <ion-button @click="openCamera" class="camera-button">Tee pilti</ion-button>
+
       <!-- Salvesta check-in -->
-      <ion-button @click="saveCheckIn" :disabled="!canSaveCheckIn">Salvesta Check-in</ion-button>
+      <ion-button class="save-button" @click="saveCheckIn" :disabled="!canSaveCheckIn">Salvesta Check-in</ion-button>
     </ion-content>
   </ion-page>
 </template>

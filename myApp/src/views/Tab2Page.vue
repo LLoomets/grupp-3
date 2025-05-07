@@ -11,7 +11,7 @@
 
     <ion-content class="ion-padding">
       <!-- Otsing -->
-      <ion-searchbar v-model="searchQuery" placeholder="Otsi baari või klubi" debounce="300" clearInput></ion-searchbar>
+      <ion-searchbar v-model="searchQuery" placeholder="Otsi baare või klubisid" debounce="300" clearInput></ion-searchbar>
 
       <div style="position: relative; height: 75vh; width: 100%;">
         <!-- Kaart -->
