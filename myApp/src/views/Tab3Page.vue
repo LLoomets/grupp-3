@@ -27,8 +27,8 @@
       </div>
 
       <!-- Või lisa uus koht käsitsi -->
-        <ion-label>Ei leidnud sobivat? </ion-label>
-        <ion-toggle v-model="manualEntryActive">Lisa koht käsitsi</ion-toggle>
+      <ion-label>Ei leidnud sobivat? </ion-label>
+      <ion-toggle v-model="manualEntryActive">Lisa koht käsitsi</ion-toggle>
 
       <div v-if="manualEntryActive" class="manual-entry">
         <ion-input v-model="manualPlaceName" placeholder="Koha nimi" />
@@ -134,7 +134,10 @@ const openCamera = async () => {
     });
 
     const webPath = Capacitor.convertFileSrc(fileUri.uri);
-    photoUrl.value = webPath; // SEE väärtus salvestatakse check-in objekti
+    photoUrl.value = webPath;
+
+    // 🔄 Salvesta viide localStorage'i
+    localStorage.setItem('lastPhotoUrl', webPath);
   } catch (error) {
     console.error('Kaamera või salvestamise viga:', error);
   }
@@ -156,7 +159,7 @@ const preselectPlaceFromQuery = () => {
     );
     if (match) {
       selectedPlace.value = match;
-      searchQuery.value = match.name;  // Täida otsinguväli koha nimega
+      searchQuery.value = match.name;
     } else {
       // Kui ei leitud sobivat kohta, siis lisa käsitsi
       manualEntryActive.value = true;
@@ -178,19 +181,25 @@ onIonViewWillEnter(async () => {
     const lat = position.coords.latitude;
     const lng = position.coords.longitude;
 
-    // Küsi ümbruskonna baarid ja klubid Overpass API kaudu
-    places.value = await fetchPlaces(lat, lng); // Kasutame fetchPlaces funktsiooni
+    // Lae kohad
+    places.value = await fetchPlaces(lat, lng);
 
-    // Kontrolli, kas bucketlistist tuli automaatne valik
+    // Kontrolli bucketlisti valikut
     preselectPlaceFromQuery();
+
+    const savedPhotoUrl = localStorage.getItem('lastPhotoUrl');
+    if (savedPhotoUrl) {
+      photoUrl.value = savedPhotoUrl;
+    }
+
   } catch (error) {
     console.error('Geolocation või API viga:', error);
   }
 });
 
+
 // Salvesta check-in
 const saveCheckIn = async () => {
-  // Koht vastavalt valikule või käsitsi sisestusele
   const place = manualEntryActive.value
     ? {
       name: manualPlaceName.value.trim(),
@@ -200,7 +209,6 @@ const saveCheckIn = async () => {
     }
     : selectedPlace.value;
 
-  // Koosta check-in objekt
   const checkIn = {
     place,
     photo: photoUrl.value,
@@ -210,19 +218,18 @@ const saveCheckIn = async () => {
     visitDate: new Date().toLocaleString(),
   };
 
-  // Salvesta localStorage'i
   const activityFeed = JSON.parse(localStorage.getItem('activityFeed') || '[]');
   activityFeed.push(checkIn);
   localStorage.setItem('activityFeed', JSON.stringify(activityFeed));
 
-  // Kui check-in lõppes, uuenda bucket list
+  // Uuenda bucketlisti
   if (selectedPlace.value) {
     const index = bucketItems.value.findIndex(
       (i) => i.name === selectedPlace.value.name && i.type === selectedPlace.value.type
     );
     if (index !== -1) {
-      bucketItems.value.splice(index, 1); // Eemalda koht bucket listist
-      localStorage.setItem('bucketlist', JSON.stringify(bucketItems.value)); // Uuenda 'localStorage'
+      bucketItems.value.splice(index, 1);
+      localStorage.setItem('bucketlist', JSON.stringify(bucketItems.value));
     }
   }
 
@@ -231,12 +238,12 @@ const saveCheckIn = async () => {
   drinks.value = '';
   notes.value = '';
   photoUrl.value = '';
+  localStorage.removeItem('lastPhotoUrl');
   selectedPlace.value = null;
   manualPlaceName.value = '';
   manualPlaceType.value = '';
   manualEntryActive.value = false;
 
-  // Näita kinnitust
   await showAlert();
 };
 
@@ -274,5 +281,4 @@ const showAlert = async () => {
   border: 1px solid #000000;
   border-radius: 4px;
 }
-
 </style>
