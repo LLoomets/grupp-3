@@ -62,7 +62,7 @@ import { LMap, LTileLayer, LMarker, LPopup, LCircle } from '@vue-leaflet/vue-lea
 import { ref, computed, watch } from 'vue';
 import L from 'leaflet';
 
-import { fetchPlaces, getUserLocation } from '../script/places';
+import { fetchPlaces, getUserLocation } from '../composables/usePlaces';
 
 // Kohandatud punane marker
 const userIcon = L.icon({

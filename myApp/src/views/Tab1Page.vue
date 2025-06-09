@@ -98,7 +98,7 @@ import {
 } from '@ionic/vue';
 import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
-import { fetchPlaces, getUserLocation } from '../script/places';
+import { fetchPlaces, getUserLocation } from '../composables/usePlaces';
 //import { quotes } from '../data/quotes'; // Import quotes
 import { fetchQuotesFromFirestore } from '../composables/useQuotes';
 
