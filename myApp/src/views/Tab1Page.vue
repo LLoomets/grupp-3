@@ -54,12 +54,7 @@
       <div v-if="latestCheckIns.length > 0" style="margin-top: 40px;">
         <h3>Viimased külastused</h3>
         <ion-list lines="none">
-          <ion-item
-            v-for="(checkIn, index) in latestCheckIns"
-            :key="index"
-            button
-            @click="goToProfile(checkIn)"
-          >
+          <ion-item v-for="(checkIn, index) in latestCheckIns" :key="index" button @click="goToProfile(checkIn)">
             <ion-label class="checkin-label">
               <div class="checkin-text-with-button">
                 <div>
@@ -70,12 +65,7 @@
                   <p v-if="checkIn.notes"><strong>Märkmed:</strong> {{ checkIn.notes }}</p>
                 </div>
               </div>
-              <img
-                v-if="checkIn.photo"
-                :src="checkIn.photo"
-                alt="Check-in photo"
-                class="checkin-photo"
-              />
+              <img v-if="checkIn.photo" :src="checkIn.photo" alt="Check-in photo" class="checkin-photo" />
             </ion-label>
           </ion-item>
         </ion-list>
@@ -109,7 +99,8 @@ import {
 import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { fetchPlaces, getUserLocation } from '../script/places';
-import { quotes } from '../data/quotes'; // Import quotes
+//import { quotes } from '../data/quotes'; // Import quotes
+import { fetchQuotesFromFirestore } from '../composables/useQuotes';
 
 const places = ref<any[]>([]);
 const suggestedPlace = ref<any>(null);
@@ -117,6 +108,7 @@ const loading = ref(true);
 const activityFeed = ref<any[]>([]);
 const todayQuote = ref<string>('');
 const router = useRouter();
+const firestoreQuotes = ref<{ id: number; text: string }[]>([]);
 
 // Arvutatud väärtus: 3 kõige uuemat check-in’i
 const latestCheckIns = computed(() => {
@@ -132,15 +124,19 @@ function goToProfile(checkIn: any) {
 
 // Juhuslik tsitaadi valimine
 function getQuoteOfTheDay() {
+  if (firestoreQuotes.value.length === 0) return;
   const today = new Date();
-  const dayIndex = today.getFullYear() * 365 + today.getMonth() * 31 + today.getDate(); // piisavalt varieeruv
-  const quoteIndex = dayIndex % quotes.length;
-  todayQuote.value = quotes[quoteIndex];
+  const dayIndex = today.getFullYear() * 365 + today.getMonth() * 31 + today.getDate();
+  const quoteIndex = dayIndex % firestoreQuotes.value.length;
+  todayQuote.value = firestoreQuotes.value[quoteIndex].text;
 }
 
 
 onIonViewWillEnter(async () => {
   try {
+    firestoreQuotes.value = await fetchQuotesFromFirestore();
+    getQuoteOfTheDay();
+
     const location = await getUserLocation();
     if (location) {
       const [lat, lng] = location;
@@ -169,8 +165,6 @@ onIonViewWillEnter(async () => {
     }
   }
 
-  // Juhusliku tsitaadi valimine
-  getQuoteOfTheDay();
 });
 </script>
 
