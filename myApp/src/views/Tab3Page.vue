@@ -11,7 +11,7 @@
 
     <ion-content class="ion-padding">
 
-      <ion-button @click="goToAR" class="ar-camera-button">Ava AR kaamera</ion-button>
+      <!-- <ion-button @click="goToAR" class="ar-camera-button">Ava AR kaamera</ion-button> -->
 
       <!-- Otsing ja rippmenüü kohtade jaoks -->
       <div class="search-wrapper">
@@ -63,7 +63,7 @@ import { Geolocation } from '@capacitor/geolocation';
 import { useRouter, useRoute } from 'vue-router';
 import { ref, computed, watch } from 'vue';
 
-import { fetchPlaces } from '../script/places';
+import { fetchPlaces } from '../composables/usePlaces';
 
 // Bucket list muudatused
 const bucketItems = ref<any[]>(JSON.parse(localStorage.getItem('bucketlist') || '[]'));

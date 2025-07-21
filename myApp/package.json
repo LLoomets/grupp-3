@@ -26,6 +26,7 @@
     "@ionic/vue": "^8.0.0",
     "@ionic/vue-router": "^8.0.0",
     "@vue-leaflet/vue-leaflet": "^0.10.1",
+    "firebase": "^11.9.0",
     "ionicons": "^7.0.0",
     "leaflet": "^1.9.4",
     "pinia": "^3.0.2",
