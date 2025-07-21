@@ -143,9 +143,9 @@ const openCamera = async () => {
 };
 
 // AR vaate avamine
-const goToAR = () => {
+/* const goToAR = () => {
   router.push('/ar-view');
-};
+}; */
 
 // Kui valiti koht bucketlistist
 const preselectPlaceFromQuery = () => {

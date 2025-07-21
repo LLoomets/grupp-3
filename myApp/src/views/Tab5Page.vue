@@ -110,7 +110,7 @@ import {
   IonGrid,
   IonRow,
   IonCol,
-  IonAvatar,
+//  IonAvatar,
   onIonViewWillEnter
 } from '@ionic/vue';
 import { ref, computed } from 'vue';
