@@ -5,52 +5,56 @@ import ARView from '../views/ARView.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
-    path: '/',
-    redirect: '/tabs/tab1'
+    path: "/",
+    redirect: "/tabs/tab1",
   },
   {
-    path: '/tabs/',
+    path: "/tabs/",
     component: TabsPage,
     children: [
       {
-        path: '',
-        redirect: '/tabs/tab1'
+        path: "",
+        redirect: "/tabs/tab1",
       },
       {
-        path: 'tab1',
-        component: () => import('@/views/Tab1Page.vue')
+        path: "tab1",
+        component: () => import("@/views/Tab1Page.vue"),
       },
       {
-        path: 'tab2',
-        component: () => import('@/views/Tab2Page.vue')
+        path: "tab2",
+        component: () => import("@/views/Tab2Page.vue"),
       },
       {
-        path: 'tab3',
-        component: () => import('@/views/Tab3Page.vue')
+        path: "tab3",
+        component: () => import("@/views/Tab3Page.vue"),
       },
       {
-        path: 'tab4',
-        component: () => import('@/views/Tab4Page.vue')
+        path: "tab4",
+        component: () => import("@/views/Tab4Page.vue"),
       },
       {
-        path: 'tab5',
-        component: () => import('@/views/Tab5Page.vue')
-      }
-    ]
+        path: "tab5",
+        component: () => import("@/views/Tab5Page.vue"),
+      },
+    ],
   },
   {
-    path: '/ar-view',
-    component: ARView
+    path: "/ar-view",
+    component: ARView,
   },
   {
-    path: '/settings',
-    component: () => import('@/views/SettingsPage.vue')
+    path: "/settings",
+    component: () => import("@/views/SettingsPage.vue"),
   },
   {
-    path: '/disclaimer',
-    component: () => import('@/views/DisclaimerPage.vue')
+    path: "/disclaimer",
+    component: () => import("@/views/DisclaimerPage.vue"),
   },
-]
+  {
+    path: "/login",
+    component: () => import("@/views/LoginPage.vue"),
+  },
+];
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),

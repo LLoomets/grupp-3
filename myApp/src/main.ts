@@ -43,6 +43,8 @@ import '@ionic/vue/css/palettes/dark.always.css';
 
 /* Theme variables */
 import './theme/variables.css';
+import { onAuthStateChanged } from 'firebase/auth';
+import { auth } from './firebase';
 
 if (Capacitor.getPlatform() !== 'web') {
   StatusBar.setOverlaysWebView({ overlay: false });
@@ -53,6 +55,12 @@ if (Capacitor.getPlatform() !== 'web') {
 const app = createApp(App)
   .use(IonicVue)
   .use(router);
+
+  onAuthStateChanged(auth, (user) => {
+    if (!user && router.currentRoute.value.path !== "/login") {
+      router.push("/login");
+    }
+  });
 
 router.isReady().then(() => {
   app.mount('#app');
