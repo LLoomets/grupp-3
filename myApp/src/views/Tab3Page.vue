@@ -64,6 +64,8 @@ import { useRouter, useRoute } from 'vue-router';
 import { ref, computed, watch } from 'vue';
 
 import { fetchPlaces } from '../composables/usePlaces';
+import { saveCheckInToFirestore } from '../composables/useCheckIn';
+
 
 // Bucket list muudatused
 const bucketItems = ref<any[]>(JSON.parse(localStorage.getItem('bucketlist') || '[]'));
@@ -209,6 +211,9 @@ const saveCheckIn = async () => {
     notes: notes.value,
     visitDate: new Date().toLocaleString(),
   };
+
+  await saveCheckInToFirestore(checkIn);
+
 
   // Salvesta localStorage'i
   const activityFeed = JSON.parse(localStorage.getItem('activityFeed') || '[]');
