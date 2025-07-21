@@ -101,6 +101,7 @@ import { useRouter } from 'vue-router';
 import { fetchPlaces, getUserLocation } from '../composables/usePlaces';
 //import { quotes } from '../data/quotes'; // Import quotes
 import { fetchQuotesFromFirestore } from '../composables/useQuotes';
+import { fetchLatestCheckIns } from '../composables/useCheckIn';
 
 const places = ref<any[]>([]);
 const suggestedPlace = ref<any>(null);
@@ -163,6 +164,12 @@ onIonViewWillEnter(async () => {
     } catch (error) {
       console.error('Vigane activityFeed JSON:', error);
     }
+  }
+
+  try {
+    activityFeed.value = await fetchLatestCheckIns(10); // nt viimased 10 check-in’i
+  } catch (error) {
+    console.error('Check-in andmete laadimine Firestore’ist ebaõnnestus:', error);
   }
 
 });

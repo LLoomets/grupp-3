@@ -1,5 +1,5 @@
 import { db } from "../firebase";
-import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import { collection, addDoc, serverTimestamp, query, orderBy, limit, getDocs } from "firebase/firestore";
 
 export const saveCheckInToFirestore = async (checkIn: any) => {
   try {
@@ -13,3 +13,13 @@ export const saveCheckInToFirestore = async (checkIn: any) => {
     return false;
   }
 };
+
+export async function fetchLatestCheckIns(limitCount = 10) {
+  const q = query(
+    collection(db, "checkins"),
+    orderBy("visitDate", "desc"),
+    limit(limitCount)
+  );
+  const snapshot = await getDocs(q);
+  return snapshot.docs.map((doc) => doc.data());
+}
