@@ -27,8 +27,8 @@
       </div>
 
       <!-- Või lisa uus koht käsitsi -->
-        <ion-label>Ei leidnud sobivat? </ion-label>
-        <ion-toggle v-model="manualEntryActive">Lisa koht käsitsi</ion-toggle>
+      <ion-label>Ei leidnud sobivat? </ion-label>
+      <ion-toggle v-model="manualEntryActive">Lisa koht käsitsi</ion-toggle>
 
       <div v-if="manualEntryActive" class="manual-entry">
         <ion-input v-model="manualPlaceName" placeholder="Koha nimi" />
@@ -62,6 +62,7 @@ import { Filesystem, Directory } from '@capacitor/filesystem';
 import { Geolocation } from '@capacitor/geolocation';
 import { useRouter, useRoute } from 'vue-router';
 import { ref, computed, watch } from 'vue';
+import { auth } from '../firebase';
 
 import { fetchPlaces } from '../composables/usePlaces';
 import { saveCheckInToFirestore } from '../composables/useCheckIn';
@@ -202,8 +203,15 @@ const saveCheckIn = async () => {
     }
     : selectedPlace.value;
 
+  const user = auth.currentUser;
+  if (!user) {
+    console.error('Kasutaja ei ole sisse logitud!');
+    return;
+  }
+  
   // Koosta check-in objekt
   const checkIn = {
+    userId: user.uid,
     place,
     photo: photoUrl.value,
     mood: mood.value,
@@ -279,5 +287,4 @@ const showAlert = async () => {
   border: 1px solid #000000;
   border-radius: 4px;
 }
-
 </style>
