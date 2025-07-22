@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from '@ionic/vue-router';
 import { RouteRecordRaw } from 'vue-router';
 import TabsPage from '../views/TabsPage.vue'
 import ARView from '../views/ARView.vue';
+import { auth } from '@/firebase';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -60,5 +61,19 @@ const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes
 })
+
+router.beforeEach((to, from, next) => {
+  const user = auth.currentUser;
+
+  if (!user && to.path !== "/login") {
+    // Kui pole sisse logitud ja lähed mitte-login lehele, suuna loginile
+    next("/login");
+  } else if (user && to.path === "/login") {
+    // Kui juba sisse logitud ja proovid loginile minna, suuna põhilehele
+    next("/tabs/tab1");
+  } else {
+    next();
+  }
+});
 
 export default router

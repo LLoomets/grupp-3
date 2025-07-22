@@ -11,7 +11,7 @@
 
     <ion-content class="ion-padding">
       <div class="welcome-text">
-        <h2>Tere, <span class="username">{{ userName || 'külaline' }}</span>!</h2>
+        <h2>Tere, <span class="username">{{ userName }}</span>!</h2>
       </div>
 
       <!-- Statistika kaardid -->
@@ -116,7 +116,15 @@ import {
 import { ref, computed } from 'vue';
 import { useRoute } from 'vue-router';
 
-const userName = ref('');
+import { collection, query, where, getDocs, orderBy } from 'firebase/firestore';
+import { db } from '../firebase';
+import { useAuth } from '@/composables/useAuth';
+import type { User } from 'firebase/auth';
+
+const { user } = useAuth()
+const typedUser = computed(() => user.value as User | null)
+const userName = computed(() => typedUser.value?.email || 'kasutaja')
+
 const activityFeed = ref<any[]>([]);
 const highlightedCheckIn = ref<any>(null);
 const temporaryHighlight = ref<any>(null);
@@ -135,20 +143,37 @@ onIonViewWillEnter(() => {
   }
 });
 
-onIonViewWillEnter(() => {
-  userName.value = localStorage.getItem('userName') || '';
-  const storedFeed = localStorage.getItem('activityFeed');
-  if (storedFeed) {
-    try {
-      const parsedFeed = JSON.parse(storedFeed);
-      activityFeed.value = parsedFeed.sort((a: any, b: any) => {
-        return new Date(b.visitDate).getTime() - new Date(a.visitDate).getTime();
-      });
-    } catch (error) {
-      console.error('Vigane activityFeed JSON:', error);
-    }
+import { watch } from 'vue';
+
+watch(user, async (newUser) => {
+  if (!newUser) {
+    console.log('Kasutaja pole sisse logitud');
+    activityFeed.value = [];
+    return;
   }
-});
+
+  console.log('Kasutaja UID:', newUser.uid);
+
+  try {
+    const q = query(
+      collection(db, 'checkins'),
+      where('userId', '==', newUser.uid),
+      orderBy('visitDate', 'desc')
+    );
+    const querySnapshot = await getDocs(q);
+
+    const results: any[] = [];
+    querySnapshot.forEach((doc) => {
+      results.push({ ...doc.data(), id: doc.id });
+    });
+
+    console.log('Laetud check-inid:', results);
+    activityFeed.value = results;
+  } catch (error) {
+    console.error('Check-in andmete laadimine ebaõnnestus:', error);
+  }
+}, { immediate: true });
+
 
 const totalCheckIns = computed(() => activityFeed.value.length);
 

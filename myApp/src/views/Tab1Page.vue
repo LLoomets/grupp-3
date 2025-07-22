@@ -116,7 +116,7 @@ const latestCheckIns = computed(() => {
   const sortedFeed = [...activityFeed.value].sort((a, b) => {
     return new Date(b.visitDate).getTime() - new Date(a.visitDate).getTime();
   });
-  return sortedFeed.slice(0, 3);
+  return sortedFeed;
 });
 
 function goToProfile(checkIn: any) {
@@ -144,7 +144,6 @@ onIonViewWillEnter(async () => {
       places.value = await fetchPlaces(lat, lng);
 
       const knownPlaces = places.value.filter((p: any) => p.name !== 'Tundmatu koht');
-
       if (knownPlaces.length > 0) {
         const randomIndex = Math.floor(Math.random() * knownPlaces.length);
         suggestedPlace.value = knownPlaces[randomIndex];
@@ -156,23 +155,13 @@ onIonViewWillEnter(async () => {
     loading.value = false;
   }
 
-  // Laeme activityFeed localStorage’ist
-  const storedFeed = localStorage.getItem('activityFeed');
-  if (storedFeed) {
-    try {
-      activityFeed.value = JSON.parse(storedFeed);
-    } catch (error) {
-      console.error('Vigane activityFeed JSON:', error);
-    }
-  }
-
   try {
     activityFeed.value = await fetchLatestCheckIns(10); // nt viimased 10 check-in’i
   } catch (error) {
     console.error('Check-in andmete laadimine Firestore’ist ebaõnnestus:', error);
   }
-
 });
+
 </script>
 
 <style scoped>

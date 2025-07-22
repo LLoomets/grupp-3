@@ -66,6 +66,7 @@ import { auth } from '../firebase';
 
 import { fetchPlaces } from '../composables/usePlaces';
 import { saveCheckInToFirestore } from '../composables/useCheckIn';
+import { serverTimestamp } from 'firebase/firestore';
 
 
 // Bucket list muudatused
@@ -208,7 +209,7 @@ const saveCheckIn = async () => {
     console.error('Kasutaja ei ole sisse logitud!');
     return;
   }
-  
+
   // Koosta check-in objekt
   const checkIn = {
     userId: user.uid,
@@ -217,7 +218,7 @@ const saveCheckIn = async () => {
     mood: mood.value,
     drinks: drinks.value,
     notes: notes.value,
-    visitDate: new Date().toLocaleString(),
+    visitDate: serverTimestamp(),
   };
 
   await saveCheckInToFirestore(checkIn);
