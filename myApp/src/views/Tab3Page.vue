@@ -223,7 +223,6 @@ const saveCheckIn = async () => {
 
   await saveCheckInToFirestore(checkIn);
 
-
   // Salvesta localStorage'i
   const activityFeed = JSON.parse(localStorage.getItem('activityFeed') || '[]');
   activityFeed.push(checkIn);

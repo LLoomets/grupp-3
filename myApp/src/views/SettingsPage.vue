@@ -27,6 +27,8 @@
         Salvesta
       </ion-button>
 
+      <p>Siin on hetkel ainult lokaalne salvestamine! Andmete muutmine ei tee midagi.</p>
+
       <ion-toast :is-open="toastOpen" :message="toastMessage" :duration="2000" position="bottom" color="primary"
         @didDismiss="toastOpen = false" />
     </ion-content>
@@ -52,31 +54,8 @@ async function saveSettings() {
   localStorage.setItem('userName', userName.value);
   localStorage.setItem('userEmail', userEmail.value);
 
-  // post to server
-  try {
-    const response = await fetch('https://reqres.in/api/users', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': 'reqres-free-v1',
-      },
-      body: JSON.stringify({
-        name: userName.value,
-        email: userEmail.value 
-      })
-    });
 
-    if (!response.ok) {
-      throw new Error('Serveri viga');
-    }
-
-    const data = await response.json();
-    console.log('Serveri vastus:', data);
-    toastMessage.value = 'Andmed on salvestatud!';
-  } catch (error) {
-    console.error('Andmete saatmine ebaõnnestus:', error);
-    toastMessage.value = 'Andmete saatmine ebaõnnestus!';
-  }
+  toastMessage.value = 'Andmed on salvestatud!';
 
   toastOpen.value = true;
 }
